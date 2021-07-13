@@ -7,7 +7,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
 public class Appointment extends AbstractAppointment {
+
   private Date BeginTime;
   private Date EndTime;
   private String Description;
