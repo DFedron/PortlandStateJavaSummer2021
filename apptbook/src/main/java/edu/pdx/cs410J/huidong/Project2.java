@@ -43,6 +43,9 @@ public class Project2 {
                 flag = false;
             } else if (Description == null){
                 Description = arg;
+                if(!Description.contains(" ")){
+                    Description = null;
+                }
                 flag = false;
             } else if (BeginDate == null) {
                 BeginDate = arg;
@@ -93,7 +96,7 @@ public class Project2 {
             printErrorMessageAndExit();
         }
 
-        
+
         Appointment appointment = new Appointment(Description,BeginTime,EndTime);
         AppointmentBook appointmentBook = new AppointmentBook(ownerName);
         TextParser textParser = new TextParser();
