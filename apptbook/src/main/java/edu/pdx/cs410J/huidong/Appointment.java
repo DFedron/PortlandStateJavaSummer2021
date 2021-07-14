@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.huidong;
 
 import edu.pdx.cs410J.AbstractAppointment;
+import jdk.jfr.Description;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,6 +14,21 @@ public class Appointment extends AbstractAppointment {
   private Date BeginTime;
   private Date EndTime;
   private String Description;
+  public Appointment(){
+
+  }
+
+  /**
+   * This constructor pass three parameters, description, beginTime, and endTime
+   * @param description
+   * @param beginTime
+   * @param endTime
+   */
+  public Appointment(String description, Date beginTime, Date endTime){
+    Description = description;
+    BeginTime = beginTime;
+    EndTime = endTime;
+  }
 
   /**
    * Set the begin time of appointment

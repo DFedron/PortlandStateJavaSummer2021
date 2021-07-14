@@ -24,7 +24,7 @@ public class Project1 {
               "More information please enter java edu.pdx.cs410J.<login-id>.Project1 -README");
     }
     else if (args[0].equals("-README")){
-        String path = "src/main/java/edu/pdx/cs410J/huidong/README.txt";
+        String path = "/edu/pdx/cs410J/huidong/README.txt";
         Class c = Project1.class;
         URL url = c.getResource(path);
         System.out.println(url);
@@ -64,7 +64,7 @@ public class Project1 {
  */
 
 
- /*       System.out.println("This is a project that can create an appointment and add to appointment book" +
+ /*       System.out.println("This is a project that can create an appointment and add to appointment book\n " +
               "usage: java edu.pdx.cs410J.<login-id>.Project1 [options] <args>\n" +
               "args are (in this order):\n" +
               "owner            The person who owns the appt book\n" +

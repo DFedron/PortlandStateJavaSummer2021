@@ -15,6 +15,10 @@ public class AppointmentBook extends AbstractAppointmentBook {
     public AppointmentBook() {
     }
 
+    public AppointmentBook(String ownerName){
+        owner = ownerName;
+    }
+
     /**
      * Get the Owner name
      * @return The owner name

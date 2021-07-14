@@ -1,113 +1,123 @@
 package edu.pdx.cs410J.huidong;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import edu.pdx.cs410J.ParserException;
+
+import java.io.*;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Project2 {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParserException {
         /**
          * Create two object, appointment and appointmentBook
          */
-        Appointment appointment = new Appointment();  // Refer to one of Dave's classes so that we can be sure it is on the classpath
-        AppointmentBook appointmentBook = new AppointmentBook();
+        String ownerName = null;
+        String Description = null;
+        String BeginDate = null;
+        String EndDate = null;
+        Date BeginTime = null;
+        Date EndTime = null;
 
         /**
          * Check all of the arguments.
          */
-        if(args.length == 0){
+        if (args.length == 0) {
             System.err.println("Missing command line arguments");
             System.err.println("Please enter owner, description, begin time, and end time in order. " +
                     "More information please enter java edu.pdx.cs410J.<login-id>.Project1 -README");
         }
-        else if (args[0].equals("-README")){
-            String path = "src/main/java/edu/pdx/cs410J/huidong/appointmentBook.txt";
-            Class c = Project1.class;
-            URL url = c.getResource(path);
-            System.out.println(url);
 
-            try{
-                InputStream is = c.getResourceAsStream("appointmentBook.txt");
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                //String s;
-                while(br.ready()){
-                    System.out.println(br.readLine());
+        for (String arg : args) {
+            if (arg.equals("-README")) {
+                try {
+                    Class c = Project2.class;
+                    InputStream inputStream = c.getResourceAsStream("README.txt");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+                    while (br.ready()) {
+                        System.out.println(br.readLine());
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace(System.err);
                 }
-                //   br.close();
-            } catch (IOException e) {
-                e.printStackTrace(System.err);
+                System.exit(0);
+            } else if (arg.equals("-print")) {
+                TextParser textParser = new TextParser();
+                textParser.parse();
+                System.exit(0);
+            } else if (arg.equals("-textFile")) {
+                String textFile = "appointmentbook.txt";
+                Class c = Project2.class;
+                URL url = c.getResource(textFile);
+                System.out.println("Here is the address where to read/write the appointment book");
+                System.out.println(url);
+                System.exit(0);
+            } else if (ownerName == null) {
+                ownerName = arg;
+            } else if (Description == null){
+                Description = arg;
+            } else if (BeginDate == null) {
+                BeginDate = arg;
+            } else if (BeginTime == null){
+                String s;
+                s = BeginDate + " " + arg;
+                DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                try {
+                    BeginTime = simpleD.parse(s);
+                } catch (ParseException e) {
+                    BeginTime = null;
+                    //System.out.println("Something is wrong");
+                    //e.printStackTrace();
+                }
+
+            } else if (EndDate == null){
+                EndDate = arg;
+            } else if (EndTime == null){
+                String s;
+                s = EndDate + " " + arg;
+                DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                try{
+                    EndTime = simpleD.parse(s);
+                } catch (Exception e) {
+                    EndTime = null;
+                    //e.printStackTrace();
+                }
+
             }
-
-
-
-
-/*        String path = "edu/pdx/cs410J/huidong/README.txt";
-        Class c = Project1.class;
-        URL url = c.getResource(path);
-        System.out.println(url);
-
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader("apptbook\\src\\main\\java\\edu\\pdx\\cs410J\\huidong\\README.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
-        String s;
-        while((s = br.readLine()) != null){
-            System.out.println(s);
+        if (ownerName == null){
+            printErrorMessageAndExit();
+        } else if (Description == null){
+            printErrorMessageAndExit();
+        } else if (BeginDate == null || BeginTime == null){
+            printErrorMessageAndExit();
+        } else if (EndDate == null || EndTime == null){
+            printErrorMessageAndExit();
         }
-        br.close();
 
- */
+        Appointment appointment = new Appointment(Description,BeginTime,EndTime);
+        AppointmentBook appointmentBook = new AppointmentBook(ownerName);
+        TextParser textParser = new TextParser();
+        TextDumper textDumper = new TextDumper();
+//        String s;
+//        s = appointmentBook.getOwnerName() + ": " + appointment.toString();
+        appointmentBook.addAppointment(appointment);
+//        System.out.println(appointmentBook.getAppointments());
+        textDumper.dump(appointmentBook);
+        textParser.parse();
 
-
- /*       System.out.println("This is a project that can create an appointment and add to appointment book" +
-              "usage: java edu.pdx.cs410J.<login-id>.Project1 [options] <args>\n" +
-              "args are (in this order):\n" +
-              "owner            The person who owns the appt book\n" +
-              "description      A description of the appointment\n" +
-              "beginTime        When the appt begins (24-hour time)\n" +
-              "endTime          When the appt ends (24-hour time)\n" +
-              "options are (options may appear in any order):\n" +
-              "-print           Prints a description of the new appointment\n" +
-              "-README          Prints a README for this project and exits\n" +
-              "Date and time should be in the format: mm/dd/yyyy hh:mm");
-
-  */
-
-
-        }
-        else if (args.length == 6) {
-            appointmentBook.setOwner(args[0]);
-            appointment.setDescription(args[1]);
-            appointment.setBeginTime(args[2]+" "+args[3]);
-            appointment.setEndTime(args[4]+" "+args[5]);
-            appointmentBook.addAppointment(appointment);
-            System.out.println(appointmentBook.toString());
-            System.out.println("Owner is " + appointmentBook.getOwnerName());
-            System.out.println(appointment.toString());
-
-        }
-        else if (args.length == 7){
-            appointmentBook.setOwner(args[1]);
-            appointment.setDescription(args[2]);
-            appointment.setBeginTime(args[3]+" "+args[4]);
-            appointment.setEndTime(args[5]+" "+args[6]);
-            if(args[0].equals("-print"))
-                System.out.println(appointment.toString());
-        }
-        else{
-            System.err.println("The input format is incorrect. " +
-                    "Please enter owner, description, begin time, and end time in order. " +
-                    "More information please enter java edu.pdx.cs410J.<login-id>.Project1 -README");
-        }
- /*  for (String arg : args) {
-      System.out.println(arg);
+        System.exit(0);
     }
 
-  */
+    private static void printErrorMessageAndExit(){
+        System.err.println("Command line is incorrect");
+        System.err.println("Please enter owner, description, begin time, and end time in order. \n" +
+                "There is only three options, -README, -print, and -textFile file" +
+                "More information please enter java edu.pdx.cs410J.<login-id>.Project1 -README");
         System.exit(1);
     }
 }
+
