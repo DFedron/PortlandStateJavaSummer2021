@@ -11,9 +11,7 @@ import java.util.Date;
 
 public class Project2 {
     public static void main(String[] args) throws IOException, ParserException {
-        /**
-         * Create two object, appointment and appointmentBook
-         */
+
         String ownerName = null;
         String Description = null;
         String BeginDate = null;
@@ -86,7 +84,7 @@ public class Project2 {
             System.err.println("Name is incorrect!");
             printErrorMessageAndExit();
         } else if (Description == null){
-            System.err.println("Something wrong with description!");
+            System.err.println("Something wrong with description! Please check your description. The description should be a complete sentence");
             printErrorMessageAndExit();
         } else if (BeginDate == null || BeginTime == null){
             System.err.println("BeginTime is malformatted!");
