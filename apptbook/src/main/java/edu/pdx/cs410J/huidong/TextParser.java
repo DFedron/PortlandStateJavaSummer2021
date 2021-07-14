@@ -41,4 +41,40 @@ public class TextParser implements AppointmentBookParser{
 
         return appointmentBook;
     }
+
+    /**
+     * reture the owner name of the appointment book;
+     * @return
+     * @throws IOException
+     */
+    public String owner() throws IOException {
+        AppointmentBook appointmentBook = new AppointmentBook();
+        Class c = TextParser.class;
+        InputStream is = c.getResourceAsStream("appointmentBook.txt");
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        String s = null;
+
+        if (!br.ready()) {
+            s = br.readLine();
+        }
+        if(s == null){
+            return null;
+        }
+        return s;
+    }
+
+    /**
+     * Check the owner name given if it matches the owner of appointment book name;
+     * @param name
+     * @return
+     * @throws IOException
+     */
+    public boolean compare(String name) throws IOException {
+        if(name != owner()){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 }
