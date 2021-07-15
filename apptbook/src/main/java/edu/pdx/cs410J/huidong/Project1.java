@@ -7,6 +7,9 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -15,13 +18,13 @@ import java.util.Date;
 public class Project1 {
 
   public static boolean flag = false;
-
+  public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";
   public static void main(String[] args) throws IOException, ParserException {
 
       String ownerName = null;
       String Description = null;
-      String BeginDate = null;
-      String EndDate = null;
+      Date BeginDate = null;
+      Date EndDate = null;
       Date BeginTime = null;
       Date EndTime = null;
 
@@ -30,8 +33,7 @@ public class Project1 {
        */
       if (args.length == 0) {
           System.err.println("Missing command line arguments");
-          System.err.println("Please enter owner, description, begin time, and end time in order. " +
-                  "More information please enter java edu.pdx.cs410J.<login-id>.Project1 -README");
+          printErrorMessageAndExit();
       }
 
       for (String arg : args) {
@@ -50,30 +52,54 @@ public class Project1 {
               }
               flag = false;
           } else if (BeginDate == null) {
-              BeginDate = arg;
+              if (arg.matches(DateFormatMach)) {
+                  DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
+                  try {
+
+                      BeginDate = simpleD.parse(arg);
+
+                  } catch (ParseException e) {
+                      System.err.println("BeginTime is malformatted!!");
+                      printErrorMessageAndExit();
+                  }
+
+              }else {
+                  System.err.println("BeginTime is malformatted!!");
+                  printErrorMessageAndExit();
+              }
               flag = false;
           } else if (BeginTime == null){
-              String s;
-              s = BeginDate + " " + arg;
-              DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+              DateFormat simpleD = new SimpleDateFormat("HH:mm");
+              simpleD.setLenient(false);
               try {
-                  BeginTime = simpleD.parse(s);
+                  BeginTime = simpleD.parse(arg);
               } catch (ParseException e) {
-                  BeginTime = null;
+                  System.err.println("BeginTime is malformatted!");
+                  printErrorMessageAndExit();
               }
               flag = false;
           } else if (EndDate == null){
-              EndDate = arg;
+              if (arg.matches(DateFormatMach)) {
+                  DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
+                  try {
+                      EndDate = simpleD.parse(arg);
+                  } catch (ParseException e) {
+                      System.err.println("EndTime is malformatted!!");
+                      printErrorMessageAndExit();
+                  }
+              }else{
+                  System.err.println("EndTime is malformatted!!");
+                  printErrorMessageAndExit();
+              }
               flag = false;
           } else if (EndTime == null){
-              String s;
-              s = EndDate + " " + arg;
-              DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+              DateFormat simpleD = new SimpleDateFormat("HH:mm");
+              simpleD.setLenient(false);
               try{
-                  EndTime = simpleD.parse(s);
-                  System.out.println("test for EndTime: " + EndTime);
-              } catch (Exception e) {
-                  EndTime = null;
+                  EndTime = simpleD.parse(arg);
+              } catch (ParseException e) {
+                  System.err.println("EndTime is malformatted!");
+                  printErrorMessageAndExit();
                   //e.printStackTrace();
               }
               flag = false;
@@ -84,7 +110,7 @@ public class Project1 {
           }
       }
       if (ownerName == null){
-          System.err.println("Name is incorrect!");
+          System.err.println("Name is missing!");
           printErrorMessageAndExit();
       } else if (Description == null){
           System.err.println("Something wrong with description! Please check your description. The description should be a complete sentence");
@@ -97,16 +123,19 @@ public class Project1 {
           printErrorMessageAndExit();
       }
 
-      Appointment appointment = new Appointment(Description,BeginTime,EndTime);
+      Appointment appointment = new Appointment(Description,BeginDate,BeginTime,EndDate,EndTime);
       AppointmentBook appointmentBook = new AppointmentBook(ownerName);
       appointmentBook.addAppointment(appointment);
       if(flag){
-//          String s;
-//          s = appointmentBook.getOwnerName() + ": " + appointment.toString();
-//          System.out.println(s);
+
           System.out.println(appointmentBook.getAppointments());
       }
-      System.out.println(appointmentBook.getAppointments());
+//      String s;
+//      s = appointmentBook.getOwnerName() + ": " + appointment.toString();
+//      System.out.println(s);
+//      System.out.println(appointmentBook.getAppointments());
+      System.out.println("Add appointment successfully!");
+
       System.exit(0);
   }
 
