@@ -93,7 +93,9 @@ public class Appointment extends AbstractAppointment {
   public String getBeginTimeString() {
     DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
     DateFormat simpleD2 = new SimpleDateFormat("HH:mm");
-    return simpleD1.format(BeginDate) +" " + simpleD2.format(BeginTime);
+    String s = String.valueOf(BeginDate) +" " + String.valueOf(BeginTime);
+
+    return simpleD1.format(BeginDate) + " " + simpleD2.format(BeginTime);
   //  throw new UnsupportedOperationException("This method is not implemented yet");
   }
   /**
