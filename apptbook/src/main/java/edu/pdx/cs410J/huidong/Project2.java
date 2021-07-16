@@ -24,8 +24,7 @@ public class Project2 {
          */
         if (args.length == 0) {
             System.err.println("Missing command line arguments");
-            System.err.println("Please enter owner, description, begin time, and end time in order. " +
-                    "More information please enter java edu.pdx.cs410J.<login-id>.Project1 -README");
+            printErrorMessageAndExit();
         }
 
         for (String arg : args) {

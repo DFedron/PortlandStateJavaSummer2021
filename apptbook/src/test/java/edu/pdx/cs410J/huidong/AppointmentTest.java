@@ -43,8 +43,8 @@ void getEndTimeStringNeedsToBeImplemented() throws ParseException {
     System.out.println("BeginTime: " + BeginTime);
     s = "04/04/2021 16:00";
     Date EndTime = simpleD.parse(s);
-    Appointment appointment = new Appointment("Date with Lisa", BeginTime,EndTime);
-    assertThat(appointment.getDescription(), containsString("Date with Lisa"));
+    Appointment appointment = new Appointment("not implemented", BeginTime,EndTime);
+    assertThat(appointment.getDescription(), containsString("not implemented"));
   }
 
   @Test

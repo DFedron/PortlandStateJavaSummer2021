@@ -113,7 +113,8 @@ public class Project1 {
           System.err.println("Name is missing!");
           printErrorMessageAndExit();
       } else if (Description == null){
-          System.err.println("Something wrong with description! Please check your description. The description should be a complete sentence");
+          System.err.println("Something wrong with description!\n" +
+                  " Please check your description. The description should be a complete sentence");
           printErrorMessageAndExit();
       } else if (BeginDate == null || BeginTime == null){
           System.err.println("BeginTime is malformatted!");
@@ -126,15 +127,16 @@ public class Project1 {
       Appointment appointment = new Appointment(Description,BeginDate,BeginTime,EndDate,EndTime);
       AppointmentBook appointmentBook = new AppointmentBook(ownerName);
       appointmentBook.addAppointment(appointment);
+      System.out.println("Add appointment successfully!");
       if(flag){
-
+          System.out.println("Appointment: ");
           System.out.println(appointmentBook.getAppointments());
       }
 //      String s;
 //      s = appointmentBook.getOwnerName() + ": " + appointment.toString();
 //      System.out.println(s);
 //      System.out.println(appointmentBook.getAppointments());
-      System.out.println("Add appointment successfully!");
+
 
       System.exit(0);
   }
