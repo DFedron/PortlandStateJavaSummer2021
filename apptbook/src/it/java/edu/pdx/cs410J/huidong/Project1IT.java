@@ -36,6 +36,13 @@ class Project1IT extends InvokeMainTestCase {
   }
 
   @Test
+  void testBeginDateIsMalformatted(){
+    MainMethodResult result = invokeMain(Project1.class,"huidong", "Test for begin time","03/03/2//1", "12:00", "03/03/2021", "13:00");
+    assertThat(result.getTextWrittenToStandardError(), containsString("BeginTime is malformatted!"));
+    assertThat(result.getExitCode(), equalTo(1));
+  }
+
+  @Test
   void testBeginTimeIsMalformatted(){
     MainMethodResult result = invokeMain(Project1.class,"huidong", "Test for begin time","03/03/2021", "12:SS", "03/03/2021", "13:00");
     assertThat(result.getTextWrittenToStandardError(), containsString("BeginTime is malformatted!"));
@@ -43,8 +50,15 @@ class Project1IT extends InvokeMainTestCase {
   }
 
   @Test
-  void testEndTimeIsMalformatted(){
+  void testEndDateIsMalformatted(){
     MainMethodResult result = invokeMain(Project1.class,"huidong", "Test for end time","03/03/2021", "12:00", "03/03/2//1", "13:00");
+    assertThat(result.getTextWrittenToStandardError(), containsString("EndTime is malformatted!"));
+    assertThat(result.getExitCode(), equalTo(1));
+  }
+
+  @Test
+  void testEndTimeIsMalformatted(){
+    MainMethodResult result = invokeMain(Project1.class,"huidong", "Test for end time","03/03/2021", "12:00", "03/03/2021", "13:ss");
     assertThat(result.getTextWrittenToStandardError(), containsString("EndTime is malformatted!"));
     assertThat(result.getExitCode(), equalTo(1));
   }
@@ -60,6 +74,13 @@ class Project1IT extends InvokeMainTestCase {
   void testUnknownCommandLineOption(){
     MainMethodResult result = invokeMain(Project1.class,"-unknown","huidong", "Test for unknown command line argument","03/03/2021", "12:00", "03/03/2//1", "13:00");
     assertThat(result.getTextWrittenToStandardError(), containsString("Wrong option appeared"));
+    assertThat(result.getExitCode(), equalTo(1));
+  }
+
+  @Test
+  void testExtraCommandLineOption(){
+    MainMethodResult result = invokeMain(Project1.class,"-print","huidong", "Test for extra command line argument","03/03/2021", "12:00", "03/03/2021", "13:00", "extra");
+    assertThat(result.getTextWrittenToStandardError(), containsString("There are extraneous command line arguments "));
     assertThat(result.getExitCode(), equalTo(1));
   }
 
