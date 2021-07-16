@@ -159,7 +159,7 @@ public class Project1 {
     private static void checkOption(String option) throws ParserException {
         if (option.equals("-README")) {
             try {
-                Class c = Project2.class;
+                Class c = Project1.class;
                 InputStream inputStream = c.getResourceAsStream("README.txt");
                 BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
                 while (br.ready()) {
