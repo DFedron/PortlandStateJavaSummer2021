@@ -154,6 +154,7 @@ public class Project2 {
             }
         }
         if(flagForPrint){
+            System.out.println("The appointment info print out");
             System.out.println(appointment.toString());
         }
 //        AppointmentBook appointmentBook = new AppointmentBook(ownerName);
