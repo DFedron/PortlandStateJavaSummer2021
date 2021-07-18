@@ -8,13 +8,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * The main class for the CS410J appointment book Project2
+ */
+
 public class Project2 {
-    public static boolean flagForCheckName = false;
-    public static boolean flagForTextFile = false;
-    public static boolean flagForFileExist = false;
-    public static boolean flagForPrint = false;
-    public static String RealPath = null;
-    public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";
+    public static boolean flagForCheckName = false;     //flag for check name
+    public static boolean flagForTextFile = false;      //flag for textFile
+    public static boolean flagForFileExist = false;     //flag for file exist
+    public static boolean flagForPrint = false;         //flag for -print
+    public static String RealPath = null;               //flag for file path
+    public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";    //String for compare the give Date.
 
     public static void main(String[] args) throws IOException, ParserException {
 
@@ -162,7 +166,11 @@ public class Project2 {
     }
 
     /**
-     * print the error message and exit;
+     *
+     * @param fileName The file name
+     * @param name      the owner name
+     * @throws IOException  throw IO exception
+     * @throws ParserException  throw parse exception
      */
     public void constructPath(String fileName, String name) throws IOException, ParserException {
         String dir = null;
@@ -196,6 +204,9 @@ public class Project2 {
 
     }
 
+    /**
+     * print error message and exit
+     */
     private static void printErrorMessageAndExit(){
         System.err.println("Please enter owner, description, begin time, and end time in order. \n" +
                 "There is only three options, -README, -print, and -textFile file\n" +

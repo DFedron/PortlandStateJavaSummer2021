@@ -9,50 +9,36 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * the TextDumper class for write appointment to a file
+ */
 public class TextDumper implements AppointmentBookDumper {
 
     private String fileName = null;
     private String RealFilePath = null;
+    /**
+     * This constructor for null param.
+     */
     TextDumper(){
 
     }
-    TextDumper(StringWriter sw){
 
-    }
 
     /**
      * This constructor can store the file name given.
-     * @param path
+     * @param path  The file path
      */
     TextDumper(String path){
         RealFilePath = path;
     }
     /**
      * This dump() function will store the appointment to appointment book;
-     * @param book
-     * @throws IOException
+     * @param book  the appointment that need to be dump
      */
 
     @Override
     public void dump(AbstractAppointmentBook book){
-//        String dir = System.getProperty("user.dir");
-//        String dir = null;
-//        File f1 = new File(this.getClass().getResource("").getPath());
-//        dir = String.valueOf(f1);
-//        String path = dir + File.separator + fileName;
-//        System.out.println("Path is: " + path);
-//
-//        File file = new File(path);
-//        File fileParent = file.getParentFile();
-//        if (!fileParent.exists()){
-//            fileParent.mkdir();
-//        }
-//        if(file.createNewFile()){
-//            System.out.println("Create a new file!");
-//        if (RealFilePath == null){
-//            System.err.println("Given path wrong!");
-//            System.exit(1);
-//        }
+
 
         try{
             BufferedWriter bw = new BufferedWriter(new FileWriter(RealFilePath));
@@ -70,21 +56,6 @@ public class TextDumper implements AppointmentBookDumper {
             System.exit(1);
         }
 
-//        }else {
-//            System.out.println("Write to the exited file");
-//            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
-//            bw.write(book.getOwnerName() +"\n");
-//
-//            ArrayList<Appointment> arrayList = new ArrayList<>();
-//            arrayList.addAll(book.getAppointments());
-//            for (int i = 0; i < book.getAppointments().size(); ++i) {
-//                bw.write("[" + arrayList.get(i) + "]" +"\n");
-//            }
-//
-//            bw.close();
-//        }
-//
-//        RealFilePath = path;
-        return;
+
     }
 }

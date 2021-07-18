@@ -17,8 +17,8 @@ import java.util.Date;
  */
 public class Project1 {
 
-  public static boolean flag = false;
-  public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";
+  public static boolean flag = false;       //flag for -print
+  public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";  //String for compare the give Date.
   public static void main(String[] args) throws IOException, ParserException {
 
       String ownerName = null;

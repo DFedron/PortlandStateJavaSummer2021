@@ -6,15 +6,29 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * This is appointmentBook class for store appointment and the owner name
+ */
+
 public class AppointmentBook extends AbstractAppointmentBook {
 
-    private String owner;
-    private Appointment appointment;
+    private String owner;   //owner name
+    private Appointment appointment;    //appointment
+    /**
+     * A arrayList for store appointment
+     */
     ArrayList<Appointment> appLists = new ArrayList<>();
 
+    /**
+     * A constructor of appointmentBook for null param
+     */
     public AppointmentBook() {
     }
 
+    /**
+     * A constructor of appointmentBook for ownerName
+     * @param ownerName     The ownerName
+     */
     public AppointmentBook(String ownerName){
         owner = ownerName;
     }

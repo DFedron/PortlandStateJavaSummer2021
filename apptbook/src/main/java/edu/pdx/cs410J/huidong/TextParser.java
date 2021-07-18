@@ -10,13 +10,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * TextParser class for read file
+ */
 public class TextParser implements AppointmentBookParser{
 
     private String RealFilePath;
 
+    /**
+     * This constructor for null param.
+     */
     TextParser(){
 
     }
+
+    /**
+     * This constructor can store path.
+     * @param path the file path
+     */
     TextParser(String path){
         RealFilePath = path;
     }

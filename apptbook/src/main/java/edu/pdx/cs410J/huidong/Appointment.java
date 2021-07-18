@@ -8,31 +8,44 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+/**
+ * Appointment class, can store the information of appointment
+ */
 public class Appointment extends AbstractAppointment {
 
-  private Date BeginTime;
-  private Date EndTime;
-  private Date BeginDate;
-  private Date EndDate;
-  private String Description;
-  private String BeginTimeToString;
-  private String EndTimeToString;
+  private Date BeginTime;//BeginTime
+  private Date EndTime;//EndTime
+  private Date BeginDate;//BeginDate
+  private Date EndDate;//EndDate
+  private String Description;//Description
+  private String BeginTimeToString;//BeginTimeToString
+  private String EndTimeToString;//EndTimeToString
+
+  /**
+   * A constructor of appointment for null param
+   */
   public Appointment(){
 
   }
 
   /**
    * This constructor pass three parameters, description, beginTime, and endTime
-   * @param description
-   * @param beginTime
-   * @param endTime
+   * @param description description of appointment
+   * @param beginTime   the beginTime of appointment
+   * @param endTime     the endTime of appointment
    */
   public Appointment(String description, Date beginTime, Date endTime){
     Description = description;
     BeginTime = beginTime;
     EndTime = endTime;
   }
+
+  /**
+   * This constructor pass three parameters, description, beginTimeToString , and endTimeToString
+   * @param description             description of appointment
+   * @param beginTimeToString       the beginTime of appointment, but String form
+   * @param endTimeToString         the endTime of appointment, but String form
+   */
   public Appointment(String description, String beginTimeToString, String endTimeToString){
     Description = description;
     BeginTimeToString = beginTimeToString;
@@ -41,11 +54,11 @@ public class Appointment extends AbstractAppointment {
 
   /**
    * This constructor pass five parameters, description, beginDate, beginTime, endDate, and endTime
-   * @param description
-   * @param beginDate
-   * @param beginTime
-   * @param endDate
-   * @param endTime
+   * @param description   description of appointment
+   * @param beginDate     the beginDate of appointment
+   * @param beginTime     the beginTime of appointment
+   * @param endDate       the EndTime of appointment
+   * @param endTime       the EndDate of appointment
    */
   public Appointment(String description, Date beginDate, Date beginTime, Date endDate, Date endTime){
     Description = description;
