@@ -10,7 +10,7 @@ public class AppointmentBook extends AbstractAppointmentBook {
 
     private String owner;
     private Appointment appointment;
-    ArrayList<AbstractAppointment> appLists = new ArrayList<>();
+    ArrayList<Appointment> appLists = new ArrayList<>();
 
     public AppointmentBook() {
     }

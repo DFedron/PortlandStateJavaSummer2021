@@ -3,21 +3,32 @@ package edu.pdx.cs410J.huidong;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Project2 {
+    public static boolean flagForCheckName = false;
+    public static boolean flagForTextFile = false;
+    public static boolean flagForFileExist = false;
+    public static boolean flagForPrint = false;
+    public static String RealPath = null;
+    public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";
+
     public static void main(String[] args) throws IOException, ParserException {
 
+//        Project2 project2 = new Project2();
+//        project2.getCurrentFilePath();
+
         String ownerName = null;
+        String fileName = null;
         String Description = null;
-        String BeginDate = null;
-        String EndDate = null;
+        Date BeginDate = null;
+        Date EndDate = null;
         Date BeginTime = null;
         Date EndTime = null;
+
 
         /**
          * Check all of the arguments.
@@ -29,48 +40,77 @@ public class Project2 {
 
         for (String arg : args) {
             boolean flag = true;
-            if(arg.contains("-")){
+
+            if(arg.substring(0,1).equals("-")){
+
                 checkOption(arg);
-            } else if (ownerName == null) {
-                ownerName = arg;
-                TextParser textParser = new TextParser();
-                if(!textParser.compare(ownerName)){
-                    ownerName = null;
+                flag = false;
+            }else if (flagForCheckName){
+                if(fileName == null){
+                    fileName = arg;
+                    flagForCheckName = false;
+                    flagForTextFile = true;
                 }
                 flag = false;
+            } else if (ownerName == null) {
+
+                ownerName = arg;
+//                TextParser textParser = new TextParser();
+//                if(!textParser.compare(ownerName)){
+//                    ownerName = null;
+//                }
+                flag = false;
             } else if (Description == null){
+
                 Description = arg;
                 if(!Description.contains(" ")){
                     Description = null;
                 }
                 flag = false;
             } else if (BeginDate == null) {
-                BeginDate = arg;
+                if(arg.matches(DateFormatMach)){
+                    DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
+                    try {
+                        BeginDate = simpleD.parse(arg);
+                    } catch (ParseException e) {
+                        System.err.println("BeginTime is malformatted!");
+                        printErrorMessageAndExit();
+                    }
+                }else {
+                    System.err.println("BeginTime is malformatted!");
+                    printErrorMessageAndExit();
+                }
                 flag = false;
             } else if (BeginTime == null){
-                String s;
-                s = BeginDate + " " + arg;
-                DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                DateFormat simpleD = new SimpleDateFormat("HH:mm");
                 try {
-                    BeginTime = simpleD.parse(s);
+                    BeginTime = simpleD.parse(arg);
                 } catch (ParseException e) {
-                    BeginTime = null;
-                    //System.out.println("Something is wrong");
-                    //e.printStackTrace();
+                    System.err.println("BeginTime is malformatted!");
+                    printErrorMessageAndExit();
                 }
                 flag = false;
             } else if (EndDate == null){
-                EndDate = arg;
+                if(arg.matches(DateFormatMach)){
+                    DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
+                    try {
+                        EndDate = simpleD.parse(arg);
+                    } catch (ParseException e) {
+                        System.err.println("EndTime is malformatted!");
+                        printErrorMessageAndExit();
+                    }
+                }else{
+                    System.err.println("EndTime is malformatted!");
+                    printErrorMessageAndExit();
+                }
                 flag = false;
             } else if (EndTime == null){
-                String s;
-                s = EndDate + " " + arg;
-                DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                DateFormat simpleD = new SimpleDateFormat("HH:mm");
                 try{
-                    EndTime = simpleD.parse(s);
+                    EndTime = simpleD.parse(arg);
                 } catch (Exception e) {
-                    EndTime = null;
-                    //e.printStackTrace();
+                    System.err.println("EndTime is malformatted!");
+                    printErrorMessageAndExit();
                 }
                 flag = false;
             }
@@ -80,7 +120,7 @@ public class Project2 {
             }
         }
         if (ownerName == null){
-            System.err.println("Name is incorrect!");
+            System.err.println("Name is Missing!");
             printErrorMessageAndExit();
         } else if (Description == null){
             System.err.println("Something wrong with description! Please check your description. The description should be a complete sentence");
@@ -93,24 +133,69 @@ public class Project2 {
             printErrorMessageAndExit();
         }
 
+        Appointment appointment = new Appointment(Description,BeginDate,BeginTime,EndDate,EndTime);
+        if(flagForTextFile){
+            Project2 project2 = new Project2();
+            project2.constructPath(fileName,ownerName);
+            TextDumper textDumper = new TextDumper(RealPath);
+            TextParser textParser = new TextParser(RealPath);
+            if (flagForFileExist){
+                AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
+                appointmentBook.addAppointment(appointment);
+                textDumper.dump(appointmentBook);
+            }else {
+                AppointmentBook appointmentBook = new AppointmentBook(ownerName);
+                appointmentBook.addAppointment(appointment);
+                textDumper.dump(appointmentBook);
+            }
+        }
+        if(flagForPrint){
+            System.out.println(appointment.toString());
+        }
+//        AppointmentBook appointmentBook = new AppointmentBook(ownerName);
+//        appointmentBook.addAppointment(appointment);
 
-        Appointment appointment = new Appointment(Description,BeginTime,EndTime);
-        AppointmentBook appointmentBook = new AppointmentBook(ownerName);
-        TextParser textParser = new TextParser();
-        TextDumper textDumper = new TextDumper();
-//        String s;
-//        s = appointmentBook.getOwnerName() + ": " + appointment.toString();
-        appointmentBook.addAppointment(appointment);
-//        System.out.println(appointmentBook.getAppointments());
-        textDumper.dump(appointmentBook);
-        textParser.parse();
-
+//        System.out.println("Path for test: " + RealPath);
+//        System.out.println("Name: " + ownerName);
+//        System.out.println("Appointment for test: " + appointment);
         System.exit(0);
     }
 
     /**
      * print the error message and exit;
      */
+    public void constructPath(String fileName, String name) throws IOException, ParserException {
+        String dir = null;
+        File f1 = new File(this.getClass().getResource("").getPath());
+        dir = String.valueOf(f1);
+        RealPath = dir + File.separator + fileName;
+
+//        System.out.println("Path is: " + RealPath);
+
+        File file = new File(RealPath);
+        File fileParent = file.getParentFile();
+        if (!fileParent.exists()){
+            fileParent.mkdir();
+        }
+        if(file.createNewFile())  {
+            System.out.println("Create a new appointment book file, add appointment successfully");
+        }else {
+            TextParser textParser = new TextParser(RealPath);
+            String ownerName = textParser.parse().getOwnerName();
+            if(!name.equals(ownerName)){
+                System.err.println("The given owner name does not match the owner name of the appointment book");
+                System.err.println("Given name: " + name);
+                System.err.println("The owner name of the appointment book: " + ownerName);
+//                System.out.println("The given name is: " + name);
+//                System.out.println("The appointment book name is: " + ownerName);
+                printErrorMessageAndExit();
+            }
+            System.out.println("The given appointment book file exists");
+            flagForFileExist = true;
+        }
+
+    }
+
     private static void printErrorMessageAndExit(){
         System.err.println("Please enter owner, description, begin time, and end time in order. \n" +
                 "There is only three options, -README, -print, and -textFile file\n" +
@@ -138,21 +223,17 @@ public class Project2 {
             }
             System.exit(0);
         } else if (option.equals("-print")) {
-            TextParser textParser = new TextParser();
-            textParser.parse();
-            System.exit(0);
+            flagForPrint = true;
         } else if (option.equals("-textFile")) {
-            String textFile = "appointmentbook.txt";
-            Class c = Project2.class;
-            URL url = c.getResource(textFile);
-            System.out.println("Here is the address where to read/write the appointment book");
-            System.out.println(url);
-            System.exit(0);
+            flagForCheckName = true;
+
         }else{
             System.err.println("Wrong option appeared");
             printErrorMessageAndExit();
         }
     }
+
+
 
 }
 

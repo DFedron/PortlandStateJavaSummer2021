@@ -30,8 +30,8 @@ public class AppointmentTest {
     Appointment appointment = new Appointment();
     assertThrows(NullPointerException.class, appointment::getBeginTimeString);
   }
-@Test
-void getEndTimeStringNeedsToBeImplemented() throws ParseException {
+  @Test
+  void getEndTimeStringNeedsToBeImplemented() throws ParseException {
     Appointment appointment = new Appointment();
     assertThrows(NullPointerException.class, appointment::getEndTimeString);
 }

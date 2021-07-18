@@ -16,6 +16,8 @@ public class Appointment extends AbstractAppointment {
   private Date BeginDate;
   private Date EndDate;
   private String Description;
+  private String BeginTimeToString;
+  private String EndTimeToString;
   public Appointment(){
 
   }
@@ -30,6 +32,11 @@ public class Appointment extends AbstractAppointment {
     Description = description;
     BeginTime = beginTime;
     EndTime = endTime;
+  }
+  public Appointment(String description, String beginTimeToString, String endTimeToString){
+    Description = description;
+    BeginTimeToString = beginTimeToString;
+    EndTimeToString = endTimeToString;
   }
 
   /**
@@ -98,6 +105,8 @@ public class Appointment extends AbstractAppointment {
     return simpleD1.format(BeginDate) + " " + simpleD2.format(BeginTime);
   //  throw new UnsupportedOperationException("This method is not implemented yet");
   }
+
+
   /**
    * Get the string which is the string form of the end time.
    * @return the string form of the end time.

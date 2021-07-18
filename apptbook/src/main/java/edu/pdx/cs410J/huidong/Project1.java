@@ -37,20 +37,20 @@ public class Project1 {
       }
 
       for (String arg : args) {
-          boolean flag = true;
+          boolean flagForExtraCommandLine = true;
           if(arg.contains("-")){
               checkOption(arg);
-              flag = false;
+              flagForExtraCommandLine = false;
           } else if (ownerName == null) {
 
               ownerName = arg;
-              flag = false;
+              flagForExtraCommandLine = false;
           } else if (Description == null){
               Description = arg;
               if(!Description.contains(" ")){
                   Description = null;
               }
-              flag = false;
+              flagForExtraCommandLine = false;
           } else if (BeginDate == null) {
               if (arg.matches(DateFormatMach)) {
                   DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
@@ -59,15 +59,15 @@ public class Project1 {
                       BeginDate = simpleD.parse(arg);
 
                   } catch (ParseException e) {
-                      System.err.println("BeginTime is malformatted!!");
+                      System.err.println("BeginTime is malformatted!");
                       printErrorMessageAndExit();
                   }
 
               }else {
-                  System.err.println("BeginTime is malformatted!!");
+                  System.err.println("BeginTime is malformatted!");
                   printErrorMessageAndExit();
               }
-              flag = false;
+              flagForExtraCommandLine = false;
           } else if (BeginTime == null){
               DateFormat simpleD = new SimpleDateFormat("HH:mm");
               simpleD.setLenient(false);
@@ -77,21 +77,21 @@ public class Project1 {
                   System.err.println("BeginTime is malformatted!");
                   printErrorMessageAndExit();
               }
-              flag = false;
+              flagForExtraCommandLine = false;
           } else if (EndDate == null){
               if (arg.matches(DateFormatMach)) {
                   DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
                   try {
                       EndDate = simpleD.parse(arg);
                   } catch (ParseException e) {
-                      System.err.println("EndTime is malformatted!!");
+                      System.err.println("EndTime is malformatted!");
                       printErrorMessageAndExit();
                   }
               }else{
-                  System.err.println("EndTime is malformatted!!");
+                  System.err.println("EndTime is malformatted!");
                   printErrorMessageAndExit();
               }
-              flag = false;
+              flagForExtraCommandLine = false;
           } else if (EndTime == null){
               DateFormat simpleD = new SimpleDateFormat("HH:mm");
               simpleD.setLenient(false);
@@ -102,9 +102,9 @@ public class Project1 {
                   printErrorMessageAndExit();
                   //e.printStackTrace();
               }
-              flag = false;
+              flagForExtraCommandLine = false;
           }
-          if(flag){
+          if(flagForExtraCommandLine){
               System.err.println("There are extraneous command line arguments ");
               printErrorMessageAndExit();
           }
