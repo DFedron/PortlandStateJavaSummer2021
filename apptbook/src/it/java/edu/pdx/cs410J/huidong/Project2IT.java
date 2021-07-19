@@ -79,7 +79,7 @@ public class Project2IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong-x.txt", "-print","huidong", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
 
         assertThat(result.getTextWrittenToStandardOut(), containsString(""));
-       // assertThat(result.getExitCode(), equalTo(0));
+       //    assertThat(result.getExitCode(), equalTo(0));
     }
 
     @Test

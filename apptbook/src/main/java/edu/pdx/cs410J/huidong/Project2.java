@@ -1,8 +1,9 @@
 package edu.pdx.cs410J.huidong;
 
-import edu.pdx.cs410J.ParserException;
+
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,10 +21,7 @@ public class Project2 {
     public static String RealPath = null;               //flag for file path
     public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";    //String for compare the give Date.
 
-    public static void main(String[] args) throws IOException, ParserException {
-
-//        Project2 project2 = new Project2();
-//        project2.getCurrentFilePath();
+    public static void main(String[] args) {
 
         String ownerName = null;
         String fileName = null;
@@ -34,9 +32,6 @@ public class Project2 {
         Date EndTime = null;
 
 
-        /**
-         * Check all of the arguments.
-         */
         if (args.length == 0) {
             System.err.println("Missing command line arguments");
             printErrorMessageAndExit();
@@ -167,40 +162,44 @@ public class Project2 {
     }
 
     /**
-     *
+     *This function can construct the path
      * @param fileName The file name
      * @param name      the owner name
-     * @throws IOException  throw IO exception
-     * @throws ParserException  throw parse exception
      */
-    public void constructPath(String fileName, String name) throws IOException, ParserException {
-        String dir = null;
-        File f1 = new File(this.getClass().getResource("").getPath());
-        dir = String.valueOf(f1);
-        RealPath = dir + File.separator + fileName;
-
+    public void constructPath(String fileName, String name){
+//        String dir;
+//        File f1 = new File(this.getClass().getResource("").getPath());
+//        dir = String.valueOf(f1);
+//        RealPath = dir + File.separator + fileName;
+//
 //        System.out.println("Path is: " + RealPath);
-
+//        System.out.println("dir is :" + dir);
+        RealPath = fileName;
         File file = new File(RealPath);
+        //System.out.println(file.getAbsolutePath());
         File fileParent = file.getParentFile();
         if (!fileParent.exists()){
             fileParent.mkdir();
         }
-        if(file.createNewFile())  {
-            System.out.println("Create a new appointment book file, add appointment successfully");
-        }else {
-            TextParser textParser = new TextParser(RealPath);
-            String ownerName = textParser.parse().getOwnerName();
-            if(!name.equals(ownerName)){
-                System.err.println("The given owner name does not match the owner name of the appointment book");
-                System.err.println("Given name: " + name);
-                System.err.println("The owner name of the appointment book: " + ownerName);
-//                System.out.println("The given name is: " + name);
-//                System.out.println("The appointment book name is: " + ownerName);
-                printErrorMessageAndExit();
+        try {
+            if(file.createNewFile())  {
+                System.out.println("Create a new appointment book file, add appointment successfully");
+            }else {
+                TextParser textParser = new TextParser(RealPath);
+                String ownerName = textParser.parse().getOwnerName();
+                if(!name.equals(ownerName)){
+                    System.err.println("The given owner name does not match the owner name of the appointment book");
+                    System.err.println("Given name: " + name);
+                    System.err.println("The owner name of the appointment book: " + ownerName);
+    //                System.out.println("The given name is: " + name);
+    //                System.out.println("The appointment book name is: " + ownerName);
+                    printErrorMessageAndExit();
+                }
+                System.out.println("The given appointment book file exists");
+                flagForFileExist = true;
             }
-            System.out.println("The given appointment book file exists");
-            flagForFileExist = true;
+        } catch (IOException e) {
+            System.err.println("Something Wrong with path!");
         }
 
     }
@@ -217,10 +216,9 @@ public class Project2 {
 
     /**
      * Check the option given if it's correct.
-     * @param option
-     * @throws ParserException
+     * @param option the option the input
      */
-    private static void checkOption(String option) throws ParserException {
+    private static void checkOption(String option) {
         if (option.equals("-README")) {
             try {
                 Class c = Project2.class;
