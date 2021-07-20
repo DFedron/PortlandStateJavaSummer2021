@@ -5,6 +5,7 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * This is appointmentBook class for store appointment and the owner name
@@ -69,5 +70,9 @@ public class AppointmentBook extends AbstractAppointmentBook {
     @Override
     public void addAppointment(AbstractAppointment abstractAppointment) {
         appLists.add((Appointment) abstractAppointment);
+    }
+
+    public void sortBook(){
+        Collections.sort(appLists);
     }
 }

@@ -7,16 +7,20 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
- * The main class for the CS410J appointment book Project2
+ * The main class for the CS410J appointment book Project3
  */
 
-public class Project2 {
+public class Project3 {
     public static boolean flagForCheckName = false;     //flag for check name
     public static boolean flagForTextFile = false;      //flag for textFile
     public static boolean flagForFileExist = false;     //flag for file exist
     public static boolean flagForPrint = false;         //flag for -print
+    public static boolean flagForPretty = false;   //flag for -pretty
+    public static boolean flagForPrettyPrint = false;         //flag for -pretty print
+    public static boolean flagForPrettyFile = false;         //flag for -pretty file
     public static String RealPath = null;               //flag for file path
     public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";    //String for compare the give Date.
 
@@ -29,7 +33,12 @@ public class Project2 {
         Date EndDate = null;
         Date BeginTime = null;
         Date EndTime = null;
-
+        String AM = null;
+        String PM = null;
+        String EndTimeString = null;
+        String BeginTimeString = null;
+        String BeginDateString = null;
+        String EndDateString = null;
 
         if (args.length == 0) {
             System.err.println("Missing command line arguments");
@@ -38,17 +47,28 @@ public class Project2 {
 
         for (String arg : args) {
             boolean flag = true;
+            if (flagForPretty){
 
-            if(arg.substring(0,1).equals("-")){
+                if(arg.equals("-")){
+                    flagForPrettyPrint = true;
+                }else {
+                    if(fileName == null){
+                        fileName = arg;
+                    }
+                    flagForPrettyFile = true;
+                }
+                flagForPretty = false;
+                flag = false;
+            }else if(arg.substring(0,1).equals("-")){
 
                 checkOption(arg);
                 flag = false;
             }else if (flagForCheckName){
                 if(fileName == null){
                     fileName = arg;
-                    flagForCheckName = false;
                     flagForTextFile = true;
                 }
+                flagForCheckName = false;
                 flag = false;
             } else if (ownerName == null) {
 
@@ -70,6 +90,7 @@ public class Project2 {
                     DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
                     try {
                         BeginDate = simpleD.parse(arg);
+                        BeginDateString = arg;
                     } catch (ParseException e) {
                         System.err.println("BeginTime is malformatted!");
                         printErrorMessageAndExit();
@@ -82,17 +103,23 @@ public class Project2 {
             } else if (BeginTime == null){
                 DateFormat simpleD = new SimpleDateFormat("HH:mm");
                 try {
+                    BeginTimeString = arg;
                     BeginTime = simpleD.parse(arg);
+
                 } catch (ParseException e) {
                     System.err.println("BeginTime is malformatted!");
                     printErrorMessageAndExit();
                 }
+                flag = false;
+            } else if (AM == null){
+                AM = arg;
                 flag = false;
             } else if (EndDate == null){
                 if(arg.matches(DateFormatMach)){
                     DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy");
                     try {
                         EndDate = simpleD.parse(arg);
+                        EndDateString = arg;
                     } catch (ParseException e) {
                         System.err.println("EndTime is malformatted!");
                         printErrorMessageAndExit();
@@ -106,10 +133,14 @@ public class Project2 {
                 DateFormat simpleD = new SimpleDateFormat("HH:mm");
                 try{
                     EndTime = simpleD.parse(arg);
+                    EndTimeString = arg;
                 } catch (Exception e) {
                     System.err.println("EndTime is malformatted!");
                     printErrorMessageAndExit();
                 }
+                flag = false;
+            }else if (PM == null){
+                PM = arg;
                 flag = false;
             }
             if(flag){
@@ -129,27 +160,111 @@ public class Project2 {
         } else if (EndDate == null || EndTime == null){
             System.err.println("EndTime is malformatted!");
             printErrorMessageAndExit();
+        } else if (AM == null){
+            System.err.println("BeginTime is malformatted!");
+            printErrorMessageAndExit();
+        } else if (PM == null){
+            System.err.println("EndTime is malformatted!");
+            printErrorMessageAndExit();
+        }
+
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+        try {
+            Date start = dateFormat.parse(BeginDateString + " " + BeginTimeString + " " + AM);
+            Date end = dateFormat.parse(EndDateString+ " " + EndTimeString + " " + PM);
+            if(end.getTime() - start.getTime() < 0){
+                System.err.println("The appointment’s end time is before its starts time");
+                System.exit(1);
+            }
+        }catch (ParseException e){
+            System.err.println("Time parse failed!");
+            printErrorMessageAndExit();
+        }
+
+
+        DateFormat df = new SimpleDateFormat("hh:mm a", Locale.US);
+        try{
+            BeginTime = df.parse(BeginTimeString + " " + AM);
+            EndTime = df.parse(EndTimeString + " " + PM);
+        }catch (ParseException e){
+            System.err.println("Time parse failed!");
+            printErrorMessageAndExit();
         }
 
         Appointment appointment = new Appointment(Description,BeginDate,BeginTime,EndDate,EndTime);
         if(flagForTextFile){
-            Project2 project2 = new Project2();
-            project2.constructPath(fileName,ownerName);
+            if(fileName == null){
+                System.err.println("FileName Missing!");
+                printErrorMessageAndExit();
+            }
+            Project3 project3 = new Project3();
+            project3.constructPath(fileName,ownerName);
             TextDumper textDumper = new TextDumper(RealPath);
             TextParser textParser = new TextParser(RealPath);
             if (flagForFileExist){
                 AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
                 appointmentBook.addAppointment(appointment);
+                appointmentBook.sortBook();
                 textDumper.dump(appointmentBook);
             }else {
                 AppointmentBook appointmentBook = new AppointmentBook(ownerName);
                 appointmentBook.addAppointment(appointment);
+                appointmentBook.sortBook();
                 textDumper.dump(appointmentBook);
+            }
+        }
+
+        if(flagForPrettyPrint){
+            if(fileName == null){
+                PrettyPrinter prettyPrinter = new PrettyPrinter();
+                AppointmentBook book = new AppointmentBook(ownerName);
+                book.addAppointment(appointment);
+                book.sortBook();
+                try {
+                    System.out.println("Pretty print out the appointment info ");
+                    prettyPrinter.print(book);
+                } catch (IOException e) {
+                    System.err.println("Pretty print to standard out wrong");
+                    System.exit(1);
+                }
+            }else{
+                PrettyPrinter prettyPrinter = new PrettyPrinter(RealPath);
+                TextParser textParser = new TextParser(RealPath);
+                AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
+                appointmentBook.addAppointment(appointment);
+                appointmentBook.sortBook();
+                try {
+                    System.out.println("Pretty print out the appointment info ");
+                    prettyPrinter.print(appointmentBook);
+                } catch (IOException e) {
+                    System.err.println("Pretty print to standard out wrong");
+                    System.exit(1);
+                }
+            }
+        }else if (flagForPrettyFile){
+            if(fileName == null){
+                System.err.println("FileName Missing!");
+                printErrorMessageAndExit();
+            }
+            Project3 project3 = new Project3();
+            project3.constructPath(fileName,ownerName);
+            PrettyPrinter prettyPrinter = new PrettyPrinter(RealPath);
+            TextParser textParser = new TextParser(RealPath);
+            if (flagForFileExist){
+                AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
+                appointmentBook.addAppointment(appointment);
+                appointmentBook.sortBook();
+                prettyPrinter.dump(appointmentBook);
+            }else {
+                AppointmentBook appointmentBook = new AppointmentBook(ownerName);
+                appointmentBook.addAppointment(appointment);
+                appointmentBook.sortBook();
+                prettyPrinter.dump(appointmentBook);
             }
         }
         if(flagForPrint){
             System.out.println("The appointment info print out");
-            System.out.println(appointment.toString());
+            System.out.println(appointment);
         }
 //        AppointmentBook appointmentBook = new AppointmentBook(ownerName);
 //        appointmentBook.addAppointment(appointment);
@@ -158,6 +273,8 @@ public class Project2 {
 //        System.out.println("Name: " + ownerName);
 //        System.out.println("Appointment for test: " + appointment);
         System.exit(0);
+
+
     }
 
     /**
@@ -190,8 +307,8 @@ public class Project2 {
                     System.err.println("The given owner name does not match the owner name of the appointment book");
                     System.err.println("Given name: " + name);
                     System.err.println("The owner name of the appointment book: " + ownerName);
-    //                System.out.println("The given name is: " + name);
-    //                System.out.println("The appointment book name is: " + ownerName);
+                    //                System.out.println("The given name is: " + name);
+                    //                System.out.println("The appointment book name is: " + ownerName);
                     printErrorMessageAndExit();
                 }
                 System.out.println("The given appointment book file exists");
@@ -199,6 +316,7 @@ public class Project2 {
             }
         } catch (IOException e) {
             System.err.println("Something Wrong with path!");
+            System.exit(1);
         }
 
     }
@@ -220,7 +338,7 @@ public class Project2 {
     private static void checkOption(String option) {
         if (option.equals("-README")) {
             try {
-                Class c = Project2.class;
+                Class c = Project3.class;
                 InputStream inputStream = c.getResourceAsStream("README.txt");
                 BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
                 while (br.ready()) {
@@ -236,7 +354,10 @@ public class Project2 {
         } else if (option.equals("-textFile")) {
             flagForCheckName = true;
 
-        }else{
+        } else if (option.equals("-pretty")){
+            flagForPretty = true;
+        }
+        else{
             System.err.println("Wrong option appeared");
             printErrorMessageAndExit();
         }
@@ -244,5 +365,7 @@ public class Project2 {
 
 
 
+
 }
+
 

@@ -7,11 +7,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Appointment class, can store the information of appointment
  */
-public class Appointment extends AbstractAppointment {
+public class Appointment extends AbstractAppointment implements Comparable <Appointment>{
 
   private Date BeginTime;//BeginTime
   private Date EndTime;//EndTime
@@ -21,6 +22,8 @@ public class Appointment extends AbstractAppointment {
   private String BeginTimeToString;//BeginTimeToString
   private String EndTimeToString;//EndTimeToString
 
+  private Date BeginTimeToDate;
+  private Date EndTimeToDate;
   /**
    * A constructor of appointment for null param
    */
@@ -105,6 +108,35 @@ public class Appointment extends AbstractAppointment {
     }
   }
 
+  @Override
+  public Date getBeginTime(){
+    DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
+    DateFormat simpleD2 = new SimpleDateFormat("HH:mm a");
+    String s;
+    s = simpleD1.format(BeginDate) + " " + simpleD2.format(BeginTime);
+    DateFormat simpleD3 = new SimpleDateFormat("MM/dd/yyyy HH:mm a");
+    try {
+      BeginTimeToDate = simpleD3.parse(s);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return BeginTimeToDate;
+  }
+
+  @Override
+  public Date getEndTime(){
+    DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
+    DateFormat simpleD2 = new SimpleDateFormat("HH:mm a");
+    String s;
+    s = simpleD1.format(EndDate) + " " + simpleD2.format(EndTime);
+    DateFormat simpleD3 = new SimpleDateFormat("MM/dd/yyyy HH:mm a");
+    try {
+      EndTimeToDate = simpleD3.parse(s);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    return EndTimeToDate;
+  }
   /**
    * Get the string which is the string form of the begin time.
    * @return the string form of the begin time.
@@ -112,10 +144,19 @@ public class Appointment extends AbstractAppointment {
   @Override
   public String getBeginTimeString() {
     DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
-    DateFormat simpleD2 = new SimpleDateFormat("HH:mm");
-    String s = String.valueOf(BeginDate) +" " + String.valueOf(BeginTime);
+    DateFormat simpleD2 = new SimpleDateFormat("hh:mm a", Locale.US);
 
-    return simpleD1.format(BeginDate) + " " + simpleD2.format(BeginTime);
+    String s;
+    s = simpleD1.format(BeginDate) + " " + simpleD2.format(BeginTime);
+    DateFormat simpleD3 = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+    try {
+      BeginTimeToDate = simpleD3.parse(s);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    simpleD3 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.US);
+
+    return simpleD3.format(BeginTimeToDate);
   //  throw new UnsupportedOperationException("This method is not implemented yet");
   }
 
@@ -127,8 +168,19 @@ public class Appointment extends AbstractAppointment {
   @Override
   public String getEndTimeString() {
     DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
-    DateFormat simpleD2 = new SimpleDateFormat("HH:mm");
-    return simpleD1.format(EndDate) +" " + simpleD2.format(EndTime);
+    DateFormat simpleD2 = new SimpleDateFormat("hh:mm a", Locale.US);
+
+    String s;
+    s = simpleD1.format(EndDate) + " " + simpleD2.format(EndTime);
+    DateFormat simpleD3 = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+    try {
+      EndTimeToDate = simpleD3.parse(s);
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+    simpleD3 = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, Locale.US);
+
+    return simpleD3.format(EndTimeToDate);
     // throw new UnsupportedOperationException("This method is not implemented yet");
   }
 
@@ -140,5 +192,23 @@ public class Appointment extends AbstractAppointment {
   public String getDescription() {
     return Description;
     //"This method is not implemented yet";
+  }
+
+  @Override
+  public int compareTo(Appointment o) {
+    if (this.getBeginTime().compareTo(o.getBeginTime()) == -1) {
+      return this.getBeginTime().compareTo(o.getBeginTime());
+    } else if (this.getBeginTime().compareTo(o.getBeginTime()) == 0) {
+      if(this.getEndTime().compareTo(o.getEndTime()) == 0){
+        String c2 = o.getDescription().substring(0,1);
+        String c1 = this.getDescription().substring(0,1);
+        return c1.compareTo(c2);
+      }
+      return this.getEndTime().compareTo(o.getEndTime());
+    }
+    else {
+      return 1;
+    }
+
   }
 }

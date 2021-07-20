@@ -1,21 +1,24 @@
 package edu.pdx.cs410J.huidong;
 
-import edu.pdx.cs410J.AbstractAppointment;
+
 import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookDumper;
 
 import java.io.*;
-import java.net.URL;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Locale;
+
 
 /**
  * the TextDumper class for write appointment to a file
  */
 public class TextDumper implements AppointmentBookDumper {
 
-    private String fileName = null;
-    private String RealFilePath = null;
+    private String fileName;
+    private String RealFilePath;
     /**
      * This constructor for null param.
      */
@@ -46,8 +49,11 @@ public class TextDumper implements AppointmentBookDumper {
 
             ArrayList<Appointment> arrayList = new ArrayList<>();
             arrayList.addAll(book.getAppointments());
+            DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
             for (int i = 0; i < book.getAppointments().size(); ++i) {
-                bw.write("[" +arrayList.get(i) + "]"+ "\n");
+                bw.write("[" + arrayList.get(i).getDescription() + " from "
+                        + simpleD.format(arrayList.get(i).getBeginTime()) + " until " +
+                        simpleD.format(arrayList.get(i).getEndTime()) + "]" + "\n");
             }
 
             bw.close();
