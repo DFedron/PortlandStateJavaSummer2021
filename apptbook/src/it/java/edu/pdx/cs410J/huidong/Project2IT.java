@@ -1,7 +1,10 @@
 package edu.pdx.cs410J.huidong;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -76,24 +79,30 @@ public class Project2IT extends InvokeMainTestCase {
 
     @Test
     void testPrintingOutAnAppointment(){
-        MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong-x.txt", "-print","huidong", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
-
-        assertThat(result.getTextWrittenToStandardOut(), containsString(""));
-       //    assertThat(result.getExitCode(), equalTo(0));
-    }
-
-    @Test
-    void testStartingNewAppointmentBookFile(){
         MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong.txt", "-print","huidong", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
-        assertThat(result.getTextWrittenToStandardError(), containsString(""));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("The appointment info print out"));
         assertThat(result.getExitCode(), equalTo(0));
     }
 
     @Test
+    void testStartingNewAppointmentBookFile(){
+        File file = new File("huidong/huidong1.txt");
+        file.delete();
+        MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong1.txt", "-print","huidong", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
+
+
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Create a new appointment book file, add appointment successfully"));
+        assertThat(result.getExitCode(), equalTo(0));
+        file.delete();
+    }
+
+
+    @Test
     void testDifferentOwnerName(){
-        MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong-x.txt", "-print","Different", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
-        assertThat(result.getTextWrittenToStandardError(), containsString(""));
-        //assertThat(result.getExitCode(), equalTo(1));
+        MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong.txt", "-print","huidong", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
+        result = invokeMain(Project2.class,"-textFile","huidong/huidong.txt", "-print","Different", "Test for print option","03/03/2021", "12:00", "03/03/2021", "13:00");
+        assertThat(result.getTextWrittenToStandardError(), containsString("The given owner name does not match the owner name of the appointment book"));
+        assertThat(result.getExitCode(), equalTo(1));
 
     }
 }

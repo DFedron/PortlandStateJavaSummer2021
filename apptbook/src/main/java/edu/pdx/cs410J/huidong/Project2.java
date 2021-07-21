@@ -46,9 +46,10 @@ public class Project2 {
             }else if (flagForCheckName){
                 if(fileName == null){
                     fileName = arg;
-                    flagForCheckName = false;
+
                     flagForTextFile = true;
                 }
+                flagForCheckName = false;
                 flag = false;
             } else if (ownerName == null) {
 
@@ -139,8 +140,11 @@ public class Project2 {
             TextParser textParser = new TextParser(RealPath);
             if (flagForFileExist){
                 AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
-                appointmentBook.addAppointment(appointment);
-                textDumper.dump(appointmentBook);
+                if(appointmentBook != null){
+                    appointmentBook.addAppointment(appointment);
+                    textDumper.dump(appointmentBook);
+                }
+
             }else {
                 AppointmentBook appointmentBook = new AppointmentBook(ownerName);
                 appointmentBook.addAppointment(appointment);

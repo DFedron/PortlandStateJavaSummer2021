@@ -231,15 +231,19 @@ public class Project3 {
                 PrettyPrinter prettyPrinter = new PrettyPrinter(RealPath);
                 TextParser textParser = new TextParser(RealPath);
                 AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
-                appointmentBook.addAppointment(appointment);
-                appointmentBook.sortBook();
-                try {
-                    System.out.println("Pretty print out the appointment info ");
-                    prettyPrinter.print(appointmentBook);
-                } catch (IOException e) {
-                    System.err.println("Pretty print to standard out wrong");
-                    System.exit(1);
+                if(appointmentBook != null){
+                    appointmentBook.addAppointment(appointment);
+                    appointmentBook.sortBook();
+                    try {
+                        System.out.println("Pretty print out the appointment info ");
+                        prettyPrinter.print(appointmentBook);
+                    } catch (IOException e) {
+                        System.err.println("Pretty print to standard out wrong");
+                        System.exit(1);
+                    }
                 }
+
+
             }
         }else if (flagForPrettyFile){
             if(fileName == null){
@@ -252,9 +256,12 @@ public class Project3 {
             TextParser textParser = new TextParser(RealPath);
             if (flagForFileExist){
                 AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
-                appointmentBook.addAppointment(appointment);
-                appointmentBook.sortBook();
-                prettyPrinter.dump(appointmentBook);
+                if (appointmentBook != null){
+                    appointmentBook.addAppointment(appointment);
+                    appointmentBook.sortBook();
+                    prettyPrinter.dump(appointmentBook);
+                }
+
             }else {
                 AppointmentBook appointmentBook = new AppointmentBook(ownerName);
                 appointmentBook.addAppointment(appointment);
