@@ -110,6 +110,9 @@ public class Appointment extends AbstractAppointment implements Comparable <Appo
 
   @Override
   public Date getBeginTime(){
+    if(BeginDate == null || BeginTime == null){
+      return null;
+    }
     DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
     DateFormat simpleD2 = new SimpleDateFormat("HH:mm a");
     String s;
@@ -125,6 +128,9 @@ public class Appointment extends AbstractAppointment implements Comparable <Appo
 
   @Override
   public Date getEndTime(){
+    if(EndDate == null || EndTime == null){
+      return null;
+    }
     DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
     DateFormat simpleD2 = new SimpleDateFormat("HH:mm a");
     String s;
