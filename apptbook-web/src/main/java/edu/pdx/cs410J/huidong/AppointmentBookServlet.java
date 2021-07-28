@@ -17,8 +17,7 @@ import java.util.Map;
  * of how to use HTTP and Java servlets to store simple dictionary of words
  * and their definitions.
  */
-public class AppointmentBookServlet extends HttpServlet
-{
+public class AppointmentBookServlet extends HttpServlet {
     static final String WORD_PARAMETER = "word";
     static final String DEFINITION_PARAMETER = "definition";
 
