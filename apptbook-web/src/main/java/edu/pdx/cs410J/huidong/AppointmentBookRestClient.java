@@ -5,6 +5,8 @@ import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -36,7 +38,14 @@ public class AppointmentBookRestClient extends HttpRequestHelper {
    * Returns the definition for the given word
    */
   public AppointmentBook getAppointments(String owner) throws IOException {
-    Response response = get(this.url, Map.of("owner", owner));
+    Response response = null;
+    try {
+      response = get(this.url, Map.of("owner", owner));
+    }catch (ConnectException | UnknownHostException e){
+      System.err.println("Cannot connect! Please check your host and port!");
+      System.exit(1);
+    }
+
     throwExceptionIfNotOkayHttpStatus(response);
     String content = response.getContent();
 //    System.out.println(content);
@@ -69,7 +78,10 @@ public class AppointmentBookRestClient extends HttpRequestHelper {
     int code = response.getCode();
     if (code != HTTP_OK) {
       String message = response.getContent();
-      throw new RestException(code, message);
+      System.err.println("Cannot find the book page!");
+      System.err.println("Got an HTTP Status Code of " + code + ": " + message);
+      System.exit(1);
+      //throw new RestException(code, message);
     }
     return response;
   }

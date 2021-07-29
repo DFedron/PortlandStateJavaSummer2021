@@ -84,6 +84,7 @@ public class AppointmentBookServlet extends HttpServlet {
             return;
         }
 
+        String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4}) (0?[0-9]|1[012]):(0?[0-9]|[12345][0-9]) (am|AM|pm|PM)";
         String beginTime = getParameter(BEGINTIME_PARAMETER, request );
         if ( beginTime == null) {
             missingRequiredParameter( response, BEGINTIME_PARAMETER);
@@ -95,6 +96,26 @@ public class AppointmentBookServlet extends HttpServlet {
             missingRequiredParameter( response, ENDTIME_PARAMETER);
             return;
         }
+
+        if(!beginTime.matches(DateFormatMach)){
+            misformatedTime(response, BEGINTIME_PARAMETER);
+            return;
+        }
+        if(!endTime.matches(DateFormatMach)){
+            misformatedTime(response, END_PARAMETER);
+            return;
+        }
+
+        try {
+            if(CheckForTime(beginTime,endTime)){
+                String message = "The appointment’s end time is before its starts time";
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+                return;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         AppointmentBook book = this.books.get(owner);
         if (book == null){
@@ -110,6 +131,18 @@ public class AppointmentBookServlet extends HttpServlet {
         pw.flush();
 
         response.setStatus( HttpServletResponse.SC_OK);
+    }
+
+    private boolean CheckForTime(String beginTime, String endTime) throws ParseException {
+        DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+
+        Date start = simpleD.parse(beginTime);
+        Date end = simpleD.parse(endTime);
+
+        if(end.getTime() < start.getTime()){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -143,6 +176,13 @@ public class AppointmentBookServlet extends HttpServlet {
         response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
     }
 
+
+    private void misformatedTime( HttpServletResponse response, String parameterName )
+            throws IOException
+    {
+        String message = parameterName + " format incorrect. Please using am/pm not 24 hour. Such as  11/01/2021 12:00 am";
+        response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+    }
     /**
      * Writes the definition of the given word to the HTTP response.
      *
@@ -153,7 +193,8 @@ public class AppointmentBookServlet extends HttpServlet {
         AppointmentBook book = this.books.get(owner);
 
         if (book == null) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no such book");
+           // response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
         } else {
             PrintWriter pw = response.getWriter();

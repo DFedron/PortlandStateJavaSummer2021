@@ -17,6 +17,7 @@ public class Project4 {
     public static boolean flagForPrettyFile = false;         //flag for -pretty file
     public static String RealPath = null;               //flag for file path
     public static String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4})";    //String for compare the give Date.
+    public static String DateFormatMach2 = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4}) (0?[0-9]|1[012]):(0?[0-9]|[12345][0-9]) (am|AM|pm|PM)";
     public static boolean flagForSearch = false;
 
     public static void main(String[] args) throws IOException {
@@ -46,7 +47,6 @@ public class Project4 {
         for (String arg : args) {
             boolean flag = true;
             if (arg.substring(0, 1).equals("-")) {
-
                 checkOption(arg);
                 flag = false;
             } else if (flagForCheckName) {
@@ -266,6 +266,10 @@ public class Project4 {
         }
         else if(Description == null){
             AppointmentBook book = client.getAppointments(ownerName);
+            if(book == null){
+                System.err.println("There is no such appointment book, please create a new one!");
+                System.exit(1);
+            }
             PrettyPrinter pretty = new PrettyPrinter(new OutputStreamWriter(System.out));
             pretty.dumpUsingWriter(book);
         }else {
