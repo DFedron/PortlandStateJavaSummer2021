@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -30,23 +31,24 @@ public class AppointmentBookRestClient extends HttpRequestHelper {
     this.url = String.format("http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET);
   }
 
-  /**
-   * Returns all dictionary entries from the server
-   */
-  public Map<String, String> getAllDictionaryEntries() throws IOException {
-    Response response = get(this.url, Map.of());
-    return Messages.parseDictionary(response.getContent());
-  }
 
   /**
    * Returns the definition for the given word
    */
-  public String getDefinition(String word) throws IOException {
-    Response response = get(this.url, Map.of("word", word));
+  public AppointmentBook getAppointments(String owner) throws IOException {
+    Response response = get(this.url, Map.of("owner", owner));
     throwExceptionIfNotOkayHttpStatus(response);
     String content = response.getContent();
-    return Messages.parseDictionaryEntry(content).getValue();
+//    System.out.println(content);
+    TextParser parser = new TextParser(new StringReader(content));
+    return parser.parseUsingReader();
   }
+
+  public void createAppointment(String owner, Appointment appointment) throws IOException {
+    Response response = postToMyURL(Map.of("owner", owner, "description", appointment.getDescription(), "beginTime", appointment.getBeginTimeString(), "endTime", appointment.getEndTimeString()));
+    throwExceptionIfNotOkayHttpStatus(response);
+  }
+
 
   public void addDictionaryEntry(String word, String definition) throws IOException {
     Response response = postToMyURL(Map.of("word", word, "definition", definition));
@@ -54,8 +56,8 @@ public class AppointmentBookRestClient extends HttpRequestHelper {
   }
 
   @VisibleForTesting
-  Response postToMyURL(Map<String, String> dictionaryEntries) throws IOException {
-    return post(this.url, dictionaryEntries);
+  Response postToMyURL(Map<String, String> appointmentinfo) throws IOException {
+    return post(this.url, appointmentinfo);
   }
 
   public void removeAllDictionaryEntries() throws IOException {

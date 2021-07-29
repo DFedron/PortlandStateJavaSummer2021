@@ -27,9 +27,9 @@ public class Messages
         return String.format("The required parameter \"%s\" is missing", parameterName);
     }
 
-    public static String definedWordAs(String word, String definition )
+    public static String addNewAppointment(Appointment appointment )
     {
-        return String.format( "Defined %s as %s", word, definition );
+        return String.format( "Add successfully. Appointment: %s from %s until %s", appointment.getDescription(), appointment.getBeginTimeString(), appointment.getEndTimeString() );
     }
 
     public static String allDictionaryEntriesDeleted() {
@@ -66,11 +66,11 @@ public class Messages
         };
     }
 
-    public static void formatDictionaryEntries(PrintWriter pw, Map<String, String> dictionary) {
-        pw.println(Messages.formatWordCount(dictionary.size()));
+    public static void formatDictionaryEntries(PrintWriter pw, Map<String, String> books) {
+        pw.println(Messages.formatWordCount(books.size()));
 
-        for (Map.Entry<String, String> entry : dictionary.entrySet()) {
-            pw.println(Messages.formatDictionaryEntry(entry.getKey(), entry.getValue()));
+        for (Map.Entry<String, String> entry : books.entrySet()) {
+            pw.println(Messages.formatDictionaryEntry(entry.getKey(), entry.getValue().toString()));
         }
     }
 

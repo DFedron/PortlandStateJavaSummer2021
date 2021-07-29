@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Project4 {
+public class Project4_Try {
     public static boolean flagForCheckName = false;     //flag for check name
     public static boolean flagForTextFile = false;      //flag for textFile
     public static boolean flagForFileExist = false;     //flag for file exist
@@ -64,7 +64,7 @@ public class Project4 {
             } else if(flagForSearch){
 
 
-                if (ownerName == null) {
+               if (ownerName == null) {
                     ownerName = arg;
 
                 } else if (BeginDate == null) {

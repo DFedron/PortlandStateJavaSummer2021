@@ -32,23 +32,23 @@ class AppointmentBookRestClientIT {
     client.removeAllDictionaryEntries();
   }
 
-  @Test
-  void test1EmptyServerContainsNoDictionaryEntries() throws IOException {
-    AppointmentBookRestClient client = newAppointmentBookRestClient();
-    Map<String, String> dictionary = client.getAllDictionaryEntries();
-    assertThat(dictionary.size(), equalTo(0));
-  }
+//  @Test
+//  void test1EmptyServerContainsNoDictionaryEntries() throws IOException {
+//    AppointmentBookRestClient client = newAppointmentBookRestClient();
+//    Map<String, String> dictionary = client.getAllDictionaryEntries();
+//    assertThat(dictionary.size(), equalTo(0));
+//  }
 
-  @Test
-  void test2DefineOneWord() throws IOException {
-    AppointmentBookRestClient client = newAppointmentBookRestClient();
-    String testWord = "TEST WORD";
-    String testDefinition = "TEST DEFINITION";
-    client.addDictionaryEntry(testWord, testDefinition);
-
-    String definition = client.getDefinition(testWord);
-    assertThat(definition, equalTo(testDefinition));
-  }
+//  @Test
+//  void test2DefineOneWord() throws IOException {
+//    AppointmentBookRestClient client = newAppointmentBookRestClient();
+//    String testWord = "TEST WORD";
+//    String testDefinition = "TEST DEFINITION";
+//    client.addDictionaryEntry(testWord, testDefinition);
+//
+//    String definition = client.getDefinition(testWord);
+//    assertThat(definition, equalTo(testDefinition));
+//  }
 
   @Test
   void test4MissingRequiredParameterReturnsPreconditionFailed() throws IOException {

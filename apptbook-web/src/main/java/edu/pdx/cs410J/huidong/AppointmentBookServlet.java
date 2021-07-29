@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * This servlet ultimately provides a REST API for working with an
@@ -18,10 +20,13 @@ import java.util.Map;
  * and their definitions.
  */
 public class AppointmentBookServlet extends HttpServlet {
-    static final String WORD_PARAMETER = "word";
-    static final String DEFINITION_PARAMETER = "definition";
-
-    private final Map<String, String> dictionary = new HashMap<>();
+    static final String OWNER_PARAMETER = "owner";
+    static final String DESCRIPTION_PARAMETER = "description";
+    static final String BEGINTIME_PARAMETER = "beginTime";
+    static final String ENDTIME_PARAMETER = "endTime";
+    static final String START_PARAMETER = "start";
+    static final String END_PARAMETER = "end";
+    private final Map<String, AppointmentBook> books = new HashMap<>();
 
     /**
      * Handles an HTTP GET request from a client by writing the definition of the
@@ -34,12 +39,26 @@ public class AppointmentBookServlet extends HttpServlet {
     {
         response.setContentType( "text/plain" );
 
-        String word = getParameter( WORD_PARAMETER, request );
-        if (word != null) {
-            writeDefinition(word, response);
-
-        } else {
-            writeAllDictionaryEntries(response);
+        String owner = getParameter(OWNER_PARAMETER, request );
+        String start = getParameter(START_PARAMETER, request);
+        String end = getParameter(END_PARAMETER, request);
+        if (owner == null) {
+            missingRequiredParameter(response, OWNER_PARAMETER);
+        } else if (start != null ){
+            if(end != null){
+                ListAllAppointmentBetweenStartAndEnd(owner,start,end,response);
+            }else {
+                missingRequiredParameter(response, END_PARAMETER);
+            }
+        }else if (end != null){
+            if(start != null){
+                ListAllAppointmentBetweenStartAndEnd(owner,start,end,response);
+            }else {
+                missingRequiredParameter(response,START_PARAMETER);
+            }
+        }
+        else {
+            listAppointmentInBook(owner, response);
         }
     }
 
@@ -53,22 +72,41 @@ public class AppointmentBookServlet extends HttpServlet {
     {
         response.setContentType( "text/plain" );
 
-        String word = getParameter(WORD_PARAMETER, request );
-        if (word == null) {
-            missingRequiredParameter(response, WORD_PARAMETER);
+        String owner = getParameter(OWNER_PARAMETER, request );
+        if (owner == null) {
+            missingRequiredParameter(response, OWNER_PARAMETER);
             return;
         }
 
-        String definition = getParameter(DEFINITION_PARAMETER, request );
-        if ( definition == null) {
-            missingRequiredParameter( response, DEFINITION_PARAMETER );
+        String description = getParameter(DESCRIPTION_PARAMETER, request );
+        if ( description == null) {
+            missingRequiredParameter( response, DESCRIPTION_PARAMETER);
             return;
         }
 
-        this.dictionary.put(word, definition);
+        String beginTime = getParameter(BEGINTIME_PARAMETER, request );
+        if ( beginTime == null) {
+            missingRequiredParameter( response, BEGINTIME_PARAMETER);
+            return;
+        }
+
+        String endTime = getParameter(ENDTIME_PARAMETER, request );
+        if ( endTime == null) {
+            missingRequiredParameter( response, ENDTIME_PARAMETER);
+            return;
+        }
+
+        AppointmentBook book = this.books.get(owner);
+        if (book == null){
+            book = new AppointmentBook(owner);
+            this.books.put(owner,book);
+        }
+
+        Appointment appointment = new Appointment(description, beginTime, endTime);
+        book.addAppointment(appointment);
 
         PrintWriter pw = response.getWriter();
-        pw.println(Messages.definedWordAs(word, definition));
+        pw.println(Messages.addNewAppointment(appointment));
         pw.flush();
 
         response.setStatus( HttpServletResponse.SC_OK);
@@ -83,7 +121,7 @@ public class AppointmentBookServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
 
-        this.dictionary.clear();
+        this.books.clear();
 
         PrintWriter pw = response.getWriter();
         pw.println(Messages.allDictionaryEntriesDeleted());
@@ -111,15 +149,16 @@ public class AppointmentBookServlet extends HttpServlet {
      * The text of the message is formatted with
      * {@link Messages#formatDictionaryEntry(String, String)}
      */
-    private void writeDefinition(String word, HttpServletResponse response) throws IOException {
-        String definition = this.dictionary.get(word);
+    private void listAppointmentInBook(String owner, HttpServletResponse response) throws IOException {
+        AppointmentBook book = this.books.get(owner);
 
-        if (definition == null) {
+        if (book == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
         } else {
             PrintWriter pw = response.getWriter();
-            pw.println(Messages.formatDictionaryEntry(word, definition));
+            TextDumper textDumper = new TextDumper(pw);
+            textDumper.dumpUsingPrintWriter(book);
 
             pw.flush();
 
@@ -133,14 +172,50 @@ public class AppointmentBookServlet extends HttpServlet {
      * The text of the message is formatted with
      * {@link Messages#formatDictionaryEntry(String, String)}
      */
-    private void writeAllDictionaryEntries(HttpServletResponse response ) throws IOException
+    private void ListAllAppointmentBetweenStartAndEnd(String owner, String start, String end, HttpServletResponse response ) throws IOException
     {
+        AppointmentBook book = this.books.get(owner);
         PrintWriter pw = response.getWriter();
-        Messages.formatDictionaryEntries(pw, dictionary);
+        boolean flag = true;
+        if (book == null) {
+            pw.println("No such appointment book!");
 
+        } else {
+
+            ArrayList<Appointment> arrayList = new ArrayList<>();
+            arrayList.addAll(book.getAppointments());
+            for(Appointment appointment : arrayList){
+                if(checkForTime(start, end, appointment)){
+                    pw.println(appointment.toString());
+                    flag = false;
+                }
+
+            }
+            if(flag){
+                pw.println("There is no match appointment!");
+            }
+
+        }
         pw.flush();
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
 
-        response.setStatus( HttpServletResponse.SC_OK );
+    private boolean checkForTime(String start, String end, Appointment appointment) {
+        DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
+        Date START = null;
+        Date END = null;
+        try {
+            START = simpleD.parse(start);
+            END = simpleD.parse(end);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(appointment.getBeginTime().getTime() >= START.getTime()){
+            if(appointment.getEndTime().getTime() <= END.getTime()){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -160,7 +235,7 @@ public class AppointmentBookServlet extends HttpServlet {
     }
 
     @VisibleForTesting
-    String getDefinition(String word) {
-        return this.dictionary.get(word);
+    AppointmentBook getDefinition(String word) {
+        return this.books.get(word);
     }
 }
