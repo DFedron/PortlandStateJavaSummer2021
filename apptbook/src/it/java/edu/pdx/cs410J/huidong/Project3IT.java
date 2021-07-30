@@ -24,6 +24,13 @@ public class Project3IT extends InvokeMainTestCase {
     }
 
     @Test
+    void testREADME(){
+        MainMethodResult result = invokeMain(Project3.class,"-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is a README file!"));
+        assertThat(result.getExitCode(), equalTo(0));
+    }
+
+    @Test
     void testMissingDescription(){
         MainMethodResult result = invokeMain(Project3.class,"-pretty","huidong/huidong.txt","huidong", "03/03/2021", "12:00", "am","03/03/2021", "1:00", "pm");
         assertThat(result.getTextWrittenToStandardError(), containsString("Something wrong with description!"));
@@ -94,12 +101,15 @@ public class Project3IT extends InvokeMainTestCase {
 
     @Test
     void testPrettyFile() throws IOException {
-        MainMethodResult result = invokeMain(Project3.class,"-pretty", "huidong/huidong.txt","huidong", "Test for pretty print file","03/03/2021", "12:00", "am","03/03/2021", "1:00", "pm");
+        MainMethodResult result = invokeMain(Project3.class,"-pretty", "huidong/huidong.txt","huidong", "SUPER Test","03/03/2021", "12:00", "am","03/03/2021", "1:00", "pm");
+        //assertThat(result.getExitCode(), equalTo(0));
         BufferedReader br = new BufferedReader(new FileReader("huidong/huidong.txt"));
         String s;
         s = br.readLine();
         br.close();
         assertThat(s,containsString("huidong"));
-        assertThat(result.getExitCode(), equalTo(0));
+//        assertThat(result.getTextWrittenToStandardError(), containsString("saf"));
+//        assertThat(result.getTextWrittenToStandardOut(), containsString("saf"));
+
     }
 }

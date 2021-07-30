@@ -28,6 +28,7 @@ public class Project3 {
 
         String ownerName = null;
         String fileName = null;
+        String fileNameForPrettyPrint = null;
         String Description = null;
         Date BeginDate = null;
         Date EndDate = null;
@@ -52,9 +53,7 @@ public class Project3 {
                 if(arg.equals("-")){
                     flagForPrettyPrint = true;
                 }else {
-                    if(fileName == null){
-                        fileName = arg;
-                    }
+                    fileNameForPrettyPrint = arg;
                     flagForPrettyFile = true;
                 }
                 flagForPretty = false;
@@ -192,6 +191,7 @@ public class Project3 {
         }
 
         Appointment appointment = new Appointment(Description,BeginDate,BeginTime,EndDate,EndTime);
+        AppointmentBook appointmentBook = null;
         if(flagForTextFile){
             if(fileName == null){
                 System.err.println("FileName Missing!");
@@ -202,12 +202,12 @@ public class Project3 {
             TextDumper textDumper = new TextDumper(RealPath);
             TextParser textParser = new TextParser(RealPath);
             if (flagForFileExist){
-                AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
+                appointmentBook = (AppointmentBook) textParser.parse();
                 appointmentBook.addAppointment(appointment);
                 appointmentBook.sortBook();
                 textDumper.dump(appointmentBook);
             }else {
-                AppointmentBook appointmentBook = new AppointmentBook(ownerName);
+                appointmentBook = new AppointmentBook(ownerName);
                 appointmentBook.addAppointment(appointment);
                 appointmentBook.sortBook();
                 textDumper.dump(appointmentBook);
@@ -217,12 +217,15 @@ public class Project3 {
         if(flagForPrettyPrint){
             if(fileName == null){
                 PrettyPrinter prettyPrinter = new PrettyPrinter();
-                AppointmentBook book = new AppointmentBook(ownerName);
-                book.addAppointment(appointment);
-                book.sortBook();
+                if(appointmentBook == null){
+                    appointmentBook = new AppointmentBook(ownerName);
+                    appointmentBook.addAppointment(appointment);
+                    appointmentBook.sortBook();
+                }
+
                 try {
                     System.out.println("Pretty print out the appointment info ");
-                    prettyPrinter.print(book);
+                    prettyPrinter.print(appointmentBook);
                 } catch (IOException e) {
                     System.err.println("Pretty print to standard out wrong");
                     System.exit(1);
@@ -230,10 +233,15 @@ public class Project3 {
             }else{
                 PrettyPrinter prettyPrinter = new PrettyPrinter(RealPath);
                 TextParser textParser = new TextParser(RealPath);
-                AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
-                if(appointmentBook != null){
-                    appointmentBook.addAppointment(appointment);
-                    appointmentBook.sortBook();
+                if(appointmentBook == null){
+                    appointmentBook = (AppointmentBook) textParser.parse();
+                    if(appointmentBook != null){
+                        appointmentBook.addAppointment(appointment);
+                        appointmentBook.sortBook();
+
+                    }
+                }else{
+                    appointmentBook = (AppointmentBook) textParser.parse();
                     try {
                         System.out.println("Pretty print out the appointment info ");
                         prettyPrinter.print(appointmentBook);
@@ -243,27 +251,42 @@ public class Project3 {
                     }
                 }
 
-
             }
         }else if (flagForPrettyFile){
-            if(fileName == null){
+            if(fileNameForPrettyPrint == null){
                 System.err.println("FileName Missing!");
                 printErrorMessageAndExit();
             }
+
             Project3 project3 = new Project3();
-            project3.constructPath(fileName,ownerName);
+            project3.constructPath(fileNameForPrettyPrint,ownerName);
             PrettyPrinter prettyPrinter = new PrettyPrinter(RealPath);
-            TextParser textParser = new TextParser(RealPath);
+            TextParser textParser;
+            if(fileName == null){
+                textParser = new TextParser(RealPath);
+            }else {
+                textParser = new TextParser(fileName);
+            }
+
             if (flagForFileExist){
-                AppointmentBook appointmentBook = (AppointmentBook) textParser.parse();
-                if (appointmentBook != null){
-                    appointmentBook.addAppointment(appointment);
-                    appointmentBook.sortBook();
+
+                if(appointmentBook == null){
+
+                    appointmentBook = (AppointmentBook) textParser.parse();
+                    if (appointmentBook != null){
+                        appointmentBook.addAppointment(appointment);
+                        appointmentBook.sortBook();
+                        prettyPrinter.dump(appointmentBook);
+                    }else {
+                        System.out.println("File is empty");
+                    }
+                }else {
+                    appointmentBook = (AppointmentBook) textParser.parse();
                     prettyPrinter.dump(appointmentBook);
                 }
 
             }else {
-                AppointmentBook appointmentBook = new AppointmentBook(ownerName);
+                appointmentBook = new AppointmentBook(ownerName);
                 appointmentBook.addAppointment(appointment);
                 appointmentBook.sortBook();
                 prettyPrinter.dump(appointmentBook);

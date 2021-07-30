@@ -23,6 +23,13 @@ public class Project2IT extends InvokeMainTestCase {
     }
 
     @Test
+    void testREADME(){
+        MainMethodResult result = invokeMain(Project2.class,"-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is a README file!"));
+        assertThat(result.getExitCode(), equalTo(0));
+    }
+
+    @Test
     void testMissingDescription(){
         MainMethodResult result = invokeMain(Project2.class,"-textFile","huidong/huidong-x.txt","huidong", "03/03/2021", "12:00", "03/03/2021", "13:00");
         assertThat(result.getTextWrittenToStandardError(), containsString("Something wrong with description!"));
