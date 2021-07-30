@@ -21,8 +21,8 @@ public class TextParserTest {
         assertNotNull(resource);
 
         TextParser parser = new TextParser(new InputStreamReader(resource));
-        System.out.println(resource.toString());
-       // assertThat(ParserException.class, parser::parseUsingReader);
+     //   System.out.println(resource.toString());
+       // assertThat(ParserException.class, parser::parse);
     }
 
     @Test
@@ -37,7 +37,6 @@ public class TextParserTest {
         StringWriter sw = new StringWriter();
         TextDumper dumper = new TextDumper(sw);
         dumper.dump(book);
-
         TextParser parser = new TextParser(new StringReader(sw.toString()));
         book = parser.parseUsingReader();
 

@@ -54,9 +54,9 @@ public class TextDumper implements AppointmentBookDumper {
         ArrayList<Appointment> arrayList = new ArrayList<>();
         arrayList.addAll(book.getAppointments());
         for(Appointment appointment : arrayList){
-            writer.write(appointment.toString() + ".\n");
+            bw.write(appointment.toString() + ".\n");
         }
-        writer.flush();
+        bw.flush();
     }
 
     public void dumpUsingPrintWriter(AppointmentBook book){
