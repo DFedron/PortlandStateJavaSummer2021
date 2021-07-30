@@ -54,25 +54,23 @@ public class AppointmentBookRestClient extends HttpRequestHelper {
   }
 
   public void createAppointment(String owner, Appointment appointment) throws IOException {
-    Response response = postToMyURL(Map.of("owner", owner, "description", appointment.getDescription(), "beginTime", appointment.getBeginTimeString(), "endTime", appointment.getEndTimeString()));
+    Response response = null;
+    try {
+      response = postToMyURL(Map.of("owner", owner, "description", appointment.getDescription(), "beginTime", appointment.getBeginTimeString(), "endTime", appointment.getEndTimeString()));
+    }catch (ConnectException | UnknownHostException e){
+      System.err.println("Cannot connect! Please check your host and port!");
+      System.exit(1);
+    }
+
     throwExceptionIfNotOkayHttpStatus(response);
   }
 
-
-  public void addDictionaryEntry(String word, String definition) throws IOException {
-    Response response = postToMyURL(Map.of("word", word, "definition", definition));
-    throwExceptionIfNotOkayHttpStatus(response);
-  }
 
   @VisibleForTesting
   Response postToMyURL(Map<String, String> appointmentinfo) throws IOException {
     return post(this.url, appointmentinfo);
   }
 
-  public void removeAllDictionaryEntries() throws IOException {
-    Response response = delete(this.url, Map.of());
-    throwExceptionIfNotOkayHttpStatus(response);
-  }
 
   private Response throwExceptionIfNotOkayHttpStatus(Response response) {
     int code = response.getCode();

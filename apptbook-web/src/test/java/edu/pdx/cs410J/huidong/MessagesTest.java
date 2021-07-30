@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huidong;
 
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
@@ -12,6 +13,19 @@ import static org.hamcrest.Matchers.*;
 
 class MessagesTest {
 
+  @Test
+  void TestMssingRequiredParameter(){
+    String s = Messages.missingRequiredParameter("owner");
+    assertThat(Messages.missingRequiredParameter("owner"), containsString(s));
+  }
+  @Test
+  void TestAddNewAppointment(){
+    String description = "TEST for description";
+    String beginTime = "06/03/2020 12:59 am";
+    String endTime = "06/03/2020 02:59 pm";
+    Appointment appointment = new Appointment(description,beginTime,endTime);
+    assertThat(Messages.addNewAppointment(appointment), containsString(appointment.toString()));
+  }
   @Test
   void malformedWordAndDefinitionReturnsNull() {
     assertThat(Messages.parseDictionaryEntry("blah"), nullValue());

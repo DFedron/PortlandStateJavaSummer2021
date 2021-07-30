@@ -19,6 +19,11 @@ public class TextDumper implements AppointmentBookDumper {
     private String fileName;
     private String RealFilePath;
     private PrintWriter pw;
+    private Writer writer;
+
+    public TextDumper(Writer writer) {
+        this.writer = writer;
+    }
     /**
      * This constructor for null param.
      */
@@ -43,27 +48,15 @@ public class TextDumper implements AppointmentBookDumper {
      */
 
     @Override
-    public void dump(AbstractAppointmentBook book){
-
-
-        try{
-            BufferedWriter bw = new BufferedWriter(new FileWriter(RealFilePath));
-            bw.write(book.getOwnerName() +"\n");
-
-            ArrayList<Appointment> arrayList = new ArrayList<>();
-            arrayList.addAll(book.getAppointments());
-            DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
-            for (int i = 0; i < book.getAppointments().size(); ++i) {
-                bw.write("[" + arrayList.get(i).getDescription() + " from "
-                        + simpleD.format(arrayList.get(i).getBeginTime()) + " until " +
-                        simpleD.format(arrayList.get(i).getEndTime()) + "]" + "\n");
-            }
-
-            bw.close();
-        }catch (IOException e){
-            System.err.println("Read failed!");
-            System.exit(1);
+    public void dump(AbstractAppointmentBook book) throws IOException {
+        BufferedWriter bw = new BufferedWriter(this.writer);
+        bw.write(book.getOwnerName() + "\n");
+        ArrayList<Appointment> arrayList = new ArrayList<>();
+        arrayList.addAll(book.getAppointments());
+        for(Appointment appointment : arrayList){
+            writer.write(appointment.toString() + ".\n");
         }
+        writer.flush();
     }
 
     public void dumpUsingPrintWriter(AppointmentBook book){

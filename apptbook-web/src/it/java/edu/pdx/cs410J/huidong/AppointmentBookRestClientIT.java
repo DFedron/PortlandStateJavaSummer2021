@@ -1,17 +1,23 @@
 package edu.pdx.cs410J.huidong;
 
 import edu.pdx.cs410J.web.HttpRequestHelper;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Integration test that tests the REST calls made by {@link AppointmentBookRestClient}
@@ -27,9 +33,22 @@ class AppointmentBookRestClientIT {
   }
 
   @Test
-  void test0RemoveAllDictionaryEntries() throws IOException {
+  void testGetAppointment() throws IOException, ParseException {
     AppointmentBookRestClient client = newAppointmentBookRestClient();
-    client.removeAllDictionaryEntries();
+    String owner = "huidong";
+    String description = "TEST for description";
+    String begingDate = "06/03/2020";
+    String beginTime = "12:59 pm";
+    String endDate = "06/03/2020";
+    String endTime = "02:59 pm";
+    DateFormat simpleD1 = new SimpleDateFormat("MM/dd/yyyy");
+    DateFormat simpleD2 = new SimpleDateFormat("hh:mm a", Locale.US);
+    AppointmentBook book1 = new AppointmentBook(owner);
+    Appointment appointment = new Appointment(description,simpleD1.parse(begingDate), simpleD2.parse(beginTime), simpleD1.parse(endDate), simpleD2.parse(endTime));
+    book1.addAppointment(appointment);
+    client.createAppointment(owner,appointment);
+    AppointmentBook book2 = client.getAppointments(owner);
+    assertEquals(book2.getOwnerName(),owner);
   }
 
 //  @Test

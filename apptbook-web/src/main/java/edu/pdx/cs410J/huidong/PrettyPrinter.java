@@ -62,6 +62,8 @@ public class PrettyPrinter implements AppointmentBookDumper {
     }
 
     public boolean checkForTime(Date start, Date end, Appointment appointment) {
+        appointment.getBeginTimeString();
+        appointment.getEndTimeString();
         if(appointment.getBeginTime().getTime() >= start.getTime()){
             if(appointment.getEndTime().getTime() <= end.getTime()){
                 return true;
@@ -71,43 +73,15 @@ public class PrettyPrinter implements AppointmentBookDumper {
     }
     @Override
     public void dump(AbstractAppointmentBook book){
-        try{
-            BufferedWriter bw = new BufferedWriter(new FileWriter(RealFilePath));
-            bw.write(book.getOwnerName() +"\n");
-
-            ArrayList<Appointment> arrayList = new ArrayList<>();
-            arrayList.addAll(book.getAppointments());
-            DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
-            for (int i = 0; i < book.getAppointments().size(); ++i) {
-                bw.write("[" + arrayList.get(i).getDescription() + " from "
-                        + simpleD.format(arrayList.get(i).getBeginTime()) + " until " +
-                        simpleD.format(arrayList.get(i).getEndTime()) + "]");
-                long Duration = arrayList.get(i).getEndTime().getTime() - arrayList.get(i).getBeginTime().getTime();
-                Duration = Duration / (1000 * 60);
-                bw.write(" Duration: " + Duration + " min" + "\n");
-            }
-
-            bw.close();
-        }catch (IOException e){
-            System.err.println("Read failed!");
-            System.exit(1);
-        }
+        PrintWriter pw = new PrintWriter(this.writer);
+        pw.println("Doesn't match this project");
+        pw.close();
     }
 
     public void print(AbstractAppointmentBook book) throws IOException {
-        ArrayList<Appointment> arrayList = new ArrayList<>();
-        arrayList.addAll(book.getAppointments());
-        DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
-        System.out.println("Owner Name: " + book.getOwnerName());
-        for (int i = 0; i < book.getAppointments().size(); ++i) {
-            long Duration = arrayList.get(i).getEndTime().getTime() - arrayList.get(i).getBeginTime().getTime();
-            Duration = Duration / (1000 * 60);
-            System.out.println(arrayList.get(i).getDescription() + " from "
-                    + simpleD.format(arrayList.get(i).getBeginTime()) + " until " +
-                    simpleD.format(arrayList.get(i).getEndTime()) +
-                    " Duration: " + Duration + " min");
-        }
+        PrintWriter pw = new PrintWriter(this.writer);
+        pw.println("Doesn't match this project");
+        pw.close();
     }
-
 
 }

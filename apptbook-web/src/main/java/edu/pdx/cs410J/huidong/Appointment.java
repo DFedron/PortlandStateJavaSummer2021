@@ -69,43 +69,6 @@ public class Appointment extends AbstractAppointment implements Comparable <Appo
     EndDate = endDate;
     EndTime = endTime;
   }
-  /**
-   * Set the begin time of appointment
-   *
-   * @param beginTime the begin time of appointment
-   */
-
-  public void setBeginTime(String beginTime) {
-    DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-    try {
-      BeginTime = simpleD.parse(beginTime);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Set the description of the appointment
-   *
-   * @param description the description of the Appointment
-   */
-  public void setDescription(String description) {
-    Description = description;
-  }
-
-  /**
-   * Set the end time of appointment
-   *
-   * @param endTime the end of appointment
-   */
-  public void setEndTime(String endTime) {
-    DateFormat simpleD = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-    try {
-      EndTime = simpleD.parse(endTime);
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-  }
 
   @Override
   public Date getBeginTime(){

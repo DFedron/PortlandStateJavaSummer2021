@@ -198,6 +198,15 @@ public class Project4 {
                 printErrorMessageAndExit();
             }
         }
+
+        try {
+            port = Integer.parseInt( portString );
+
+        } catch (NumberFormatException ex) {
+            System.err.println("port must be an integer!");
+            printErrorMessageAndExit();
+            return;
+        }
         if (ownerName == null) {
             System.err.println("Name is Missing!");
             printErrorMessageAndExit();
@@ -235,19 +244,12 @@ public class Project4 {
             }
         }
 
-        try {
-            port = Integer.parseInt( portString );
 
-        } catch (NumberFormatException ex) {
-            System.err.println("port must be an integer!");
-            printErrorMessageAndExit();
-            return;
-        }
         AppointmentBookRestClient client = new AppointmentBookRestClient(host, port);
 
 
         if(flagForSearch){
-            System.out.println("search flag is on!");
+            //System.out.println("search flag is on!");
             if (start != null){
                 if(end != null){
                     AppointmentBook book = client.getAppointments(ownerName);
@@ -262,7 +264,7 @@ public class Project4 {
                 System.err.println("Missing Begin Time");
                 printErrorMessageAndExit();
             }
-
+            //flagForSearch = false;
         }
         else if(Description == null){
             AppointmentBook book = client.getAppointments(ownerName);
@@ -275,23 +277,19 @@ public class Project4 {
         }else {
             Appointment appointment = new Appointment(Description, BeginDate, BeginTime, EndDate, EndTime);
             client.createAppointment(ownerName,appointment);
+            System.out.println("Successfully, Create a new appointment!");
+
+            if (flagForPrint) {
+                System.out.println("The appointment info print out");
+                System.out.println(appointment);
+                flagForPrint = false;
+            }
         }
 
-
-
-
-
-        if (flagForPrint) {
-            Appointment appointment = new Appointment(Description, BeginDate, BeginTime, EndDate, EndTime);
-            System.out.println("The appointment info print out");
-            System.out.println(appointment);
+        if (flagForPrint){
+            System.out.println("There is no new appointment added!");
         }
-//        AppointmentBook appointmentBook = new AppointmentBook(ownerName);
-//        appointmentBook.addAppointment(appointment);
 
-//        System.out.println("Path for test: " + RealPath);
-//        System.out.println("Name: " + ownerName);
-//        System.out.println("Appointment for test: " + appointment);
         System.exit(0);
 
 
@@ -324,7 +322,8 @@ public class Project4 {
                 }
                 br.close();
             } catch (IOException e) {
-                e.printStackTrace(System.err);
+                System.err.println("Cannot fine README file!");
+                System.exit(1);
             }
             System.exit(0);
         } else if (option.equals("-print")) {
