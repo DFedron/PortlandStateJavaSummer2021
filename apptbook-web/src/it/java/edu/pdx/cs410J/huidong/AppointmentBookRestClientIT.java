@@ -73,7 +73,7 @@ class AppointmentBookRestClientIT {
   void test4MissingRequiredParameterReturnsPreconditionFailed() throws IOException {
     AppointmentBookRestClient client = newAppointmentBookRestClient();
     HttpRequestHelper.Response response = client.postToMyURL(Map.of());
-    assertThat(response.getContent(), containsString("Precondition Failed"));
+    assertThat(response.getContent(), containsString("The required parameter \"owner\" is missing"));
     assertThat(response.getCode(), equalTo(HttpURLConnection.HTTP_PRECON_FAILED));
   }
 
