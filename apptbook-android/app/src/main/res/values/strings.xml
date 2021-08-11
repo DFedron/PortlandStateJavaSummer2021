@@ -12,5 +12,19 @@
     <string name="create_new_appointment">Create New Appointment</string>
     <string name="search_by_owner_name">Search by Owner Name</string>
     <string name="search_by_time">Search by Time</string>
+    <string name="title_activity_create_appointment">CreateAppointmentActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="owner_name">Owner Name</string>
+    <string name="description">Description</string>
+    <string name="create">Create</string>
+    <string name="begintime">BeginTime  eg: 08/11/2021 12:00 am</string>
+    <string name="endtime">EndTime  eg: 08/11/2021 5:00 pm</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huidong;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -17,6 +18,7 @@ import edu.pdx.cs410J.huidong.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+
+        Button createAppointment = findViewById(R.id.create_new_appointment);
+        createAppointment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CreateAppointmentPage.class);
+                startActivity(intent);
             }
         });
     }
