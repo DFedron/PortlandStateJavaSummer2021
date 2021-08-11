@@ -1,6 +1,5 @@
 package edu.pdx.cs410J.huidong;
 
-import android.widget.Toast;
 
 import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookParser;
