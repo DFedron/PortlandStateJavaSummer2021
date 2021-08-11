@@ -12,4 +12,5 @@
     <string name="create_new_appointment">Create New Appointment</string>
     <string name="search_by_owner_name">Search by Owner Name</string>
     <string name="search_by_time">Search by Time</string>
+
 </resources>
