@@ -4,12 +4,8 @@ import edu.pdx.cs410J.AbstractAppointmentBook;
 import edu.pdx.cs410J.AppointmentBookDumper;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 public class PrettyPrinter implements AppointmentBookDumper {
     private String RealFilePath;
@@ -31,8 +27,8 @@ public class PrettyPrinter implements AppointmentBookDumper {
     }
 
     public void dumpUsingWriter(AppointmentBook book){
-        PrintWriter pw = new PrintWriter(this.writer);
-        pw.println(book.getOwnerName() + "'s Appointment Book" );
+        //PrintWriter pw = new PrintWriter(this.writer);
+        pw.println(book.getOwnerName());
         ArrayList<Appointment> arrayList = new ArrayList<>();
         arrayList.addAll(book.getAppointments());
         for (Appointment appointment : arrayList) {
@@ -42,12 +38,11 @@ public class PrettyPrinter implements AppointmentBookDumper {
         pw.flush();
     }
 
-    public void printUsingWriter(AppointmentBook book, Date start, Date end){
-        PrintWriter pw = new PrintWriter(this.writer);
+    public boolean printUsingWriter(AppointmentBook book, Date start, Date end){
+        //PrintWriter pw = new PrintWriter(this.writer);
         boolean flag = true;
         if (book == null) {
-            pw.println("No such appointment book!");
-
+           return false;
         } else {
             ArrayList<Appointment> arrayList = new ArrayList<>();
             arrayList.addAll(book.getAppointments());
@@ -58,10 +53,11 @@ public class PrettyPrinter implements AppointmentBookDumper {
                 }
             }
             if(flag){
-                pw.println("There is no match appointment!");
+                return false;
             }
         }
         pw.flush();
+        return true;
     }
 
     public boolean checkForTime(Date start, Date end, Appointment appointment) {

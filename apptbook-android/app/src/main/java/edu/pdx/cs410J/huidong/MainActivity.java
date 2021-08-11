@@ -19,6 +19,7 @@ import edu.pdx.cs410J.huidong.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +53,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button searchByname = findViewById(R.id.search_by_owner_name);
+        searchByname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, displayAppointmentInfo.class);
+                startActivity(intent);
+            }
+        });
+
+        Button searchByTime = findViewById(R.id.search_by_time);
+        searchByTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SearchByTime.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -71,6 +90,12 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id == R.id.action_README){
+            //Toast.makeText(this, "Help was pressed", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(MainActivity.this, READMEview.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

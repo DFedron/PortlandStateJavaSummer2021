@@ -26,5 +26,7 @@
     <string name="create">Create</string>
     <string name="begintime">BeginTime  eg: 08/11/2021 12:00 am</string>
     <string name="endtime">EndTime  eg: 08/11/2021 5:00 pm</string>
+    <string name="search">Search</string>
+    <string name="help">Help</string>
 
 </resources>
