@@ -54,7 +54,9 @@ public class CreateAppointmentPage extends AppCompatActivity {
             return;
         }
 
-        parseDate(BeginTimeToString, EndTimeToString);
+        if(!parseDate(BeginTimeToString, EndTimeToString)){
+            return;
+        }
         File apptsFile = getFile(ownerToString);
         Appointment appointment = new Appointment(DescriptionToString, BeginTimeToString, EndTimeToString);
 
@@ -75,6 +77,10 @@ public class CreateAppointmentPage extends AppCompatActivity {
             try {
                 TextParser textParser = new TextParser(new FileReader(apptsFile));
                 AppointmentBook book = textParser.parseUsingReader();
+                if(book == null){
+                    displayErrorMessage("Cannot parse file correctly, file may misformatted");
+                    return;
+                }
                 book.addAppointment(appointment);
                 PrintWriter pw = new PrintWriter(new FileWriter(apptsFile));
                 PrettyPrinter prettyPrinter = new PrettyPrinter(pw);
@@ -100,16 +106,16 @@ public class CreateAppointmentPage extends AppCompatActivity {
     }
 
 
-    private void parseDate(String beginTimeToString, String endTimeToString) {
+    private boolean parseDate(String beginTimeToString, String endTimeToString) {
         Date start ;
         Date end;
         String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4}) (0?[0-9]|1[012]):(0?[0-9]|[12345][0-9]) (am|AM|pm|PM)";
         if (!beginTimeToString.matches(DateFormatMach)){
             displayErrorMessage("BeginTime is Misformatted");
-            return;
+            return false;
         }else if(!endTimeToString.matches(DateFormatMach)){
             displayErrorMessage("EndTime is Misformatted");
-            return;
+            return false;
         }
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
@@ -118,13 +124,13 @@ public class CreateAppointmentPage extends AppCompatActivity {
             end = dateFormat.parse(endTimeToString);
             if (end.getTime() - start.getTime() < 0) {
                 displayErrorMessage("The appointment’s end time is before its starts time");
-                return;
+                return false;
             }
         } catch (ParseException e) {
             displayErrorMessage("Time parse failed!");
-            return;
+            return false;
         }
-
+        return true;
     }
 
     private void displayErrorMessage(String message) {

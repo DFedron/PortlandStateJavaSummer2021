@@ -29,14 +29,19 @@ public class displayAppointmentInfo extends AppCompatActivity {
     private void OwnerSearch() {
         EditText owner = findViewById(R.id.ownername);
         String ownerToString = owner.getText().toString();
+        ArrayAdapter<String> appts = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        ListView listOfAppts = findViewById(R.id.Appointments);
+        listOfAppts.setAdapter(appts);
+
         if(ownerToString.isEmpty()){
             displayErrorMessage("Owner Name is Missing");
             return;
         }
         File apptsFile = getFile(ownerToString);
-        ArrayAdapter<String> appts = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+
 
         if (!apptsFile.exists()) {
+            displayErrorMessage("There is no such appointment book");
             return;
         }
 
@@ -54,7 +59,7 @@ public class displayAppointmentInfo extends AppCompatActivity {
         }
 
 
-        ListView listOfAppts = findViewById(R.id.Appointments);
+        //ListView listOfAppts = findViewById(R.id.Appointments);
         listOfAppts.setAdapter(appts);
     }
 

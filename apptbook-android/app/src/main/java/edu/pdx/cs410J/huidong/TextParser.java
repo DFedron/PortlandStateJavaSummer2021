@@ -103,7 +103,7 @@ public class TextParser implements AppointmentBookParser{
 
 
         } catch (IOException  | ParseException e) {
-            e.getStackTrace();
+            return null;
         }
         return book;
     }

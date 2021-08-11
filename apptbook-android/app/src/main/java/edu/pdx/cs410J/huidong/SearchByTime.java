@@ -41,6 +41,9 @@ public class SearchByTime extends AppCompatActivity {
         String ownerToString = owner.getText().toString();
         String BeginTimeToString = beginTime.getText().toString();
         String EndTimeToString = endTime.getText().toString();
+        ArrayAdapter<String> appts = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        ListView listOfAppts = findViewById(R.id.Appointments);
+        listOfAppts.setAdapter(appts);
 
         if(ownerToString.isEmpty()){
             displayErrorMessage("Owner Name is Missing");
@@ -53,7 +56,9 @@ public class SearchByTime extends AppCompatActivity {
             return;
         }
 
-        parseDate(BeginTimeToString, EndTimeToString);
+        if(!parseDate(BeginTimeToString, EndTimeToString)){
+            return;
+        }
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
         Date start ;
         Date end;
@@ -67,10 +72,12 @@ public class SearchByTime extends AppCompatActivity {
 
 
         File apptsFile = getFile(ownerToString);
-        ArrayAdapter<String> appts = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+
 
         if (!apptsFile.exists()) {
             displayErrorMessage("There is no match appointment book!");
+            //ListView listOfAppts = findViewById(R.id.Appointments);
+            listOfAppts.setAdapter(appts);
             return;
         }
 
@@ -81,6 +88,10 @@ public class SearchByTime extends AppCompatActivity {
             TextParser textParser = new TextParser(new FileReader(apptsFile));
             AppointmentBook book = textParser.parseUsingReader();
 
+            if(book == null){
+                displayErrorMessage("Cannot parse file correctly, file may misformatted");
+                return;
+            }
             ArrayList<Appointment> arrayList = new ArrayList<>();
             arrayList.addAll(book.getAppointments());
 
@@ -93,14 +104,17 @@ public class SearchByTime extends AppCompatActivity {
             }
             if(flag){
                 displayErrorMessage("There is no match appointments");
+               // ListView listOfAppts = findViewById(R.id.Appointments);
+                listOfAppts.setAdapter(appts);
                 return;
             }
         } catch (IOException e) {
             displayErrorMessage("Read failed\n" + e.getMessage());
+            return;
         }
 
 
-        ListView listOfAppts = findViewById(R.id.Appointments);
+        //ListView listOfAppts = findViewById(R.id.Appointments);
         listOfAppts.setAdapter(appts);
     }
 
@@ -115,17 +129,17 @@ public class SearchByTime extends AppCompatActivity {
         return false;
     }
 
-    private void parseDate(String beginTimeToString, String endTimeToString) {
+    private boolean parseDate(String beginTimeToString, String endTimeToString) {
 
         Date start ;
         Date end;
         String DateFormatMach = "(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])/(\\d{4}) (0?[0-9]|1[012]):(0?[0-9]|[12345][0-9]) (am|AM|pm|PM)";
         if (!beginTimeToString.matches(DateFormatMach)){
             displayErrorMessage("BeginTime is Misformatted");
-            return;
+            return false;
         }else if(!endTimeToString.matches(DateFormatMach)){
             displayErrorMessage("EndTime is Misformatted");
-            return;
+            return false;
         }
 
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.US);
@@ -134,13 +148,13 @@ public class SearchByTime extends AppCompatActivity {
             end = dateFormat.parse(endTimeToString);
             if (end.getTime() - start.getTime() < 0) {
                 displayErrorMessage("The appointment’s end time is before its starts time");
-                return;
+                return false;
             }
         } catch (ParseException e) {
             displayErrorMessage("Time parse failed!");
-            return;
+            return false;
         }
-
+        return true;
     }
 
     private File getFile(String owner) {
