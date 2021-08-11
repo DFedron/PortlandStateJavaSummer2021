@@ -44,20 +44,7 @@ public class TextParser implements AppointmentBookParser{
     public AbstractAppointmentBook parse(){
         AppointmentBook appointmentBook = null;
         BufferedReader br = new BufferedReader(this.reader);
-        try {
-            if (!br.ready()) {
 
-                System.err.println("Missing owner");
-                System.exit(1);
-            }
-                String owner = br.readLine();
-                return new AppointmentBook(owner);
-
-
-        } catch (IOException e) {
-            System.err.println("Malformatted text!");
-            System.exit(1);
-        }
         return appointmentBook;
 
     }
