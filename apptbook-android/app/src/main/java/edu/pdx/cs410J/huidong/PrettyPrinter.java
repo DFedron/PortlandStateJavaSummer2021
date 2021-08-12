@@ -29,8 +29,6 @@ public class PrettyPrinter implements AppointmentBookDumper {
     }
 
     public void dumpUsingWriter(AppointmentBook book){
-        Collection<Object> strings = Collections.singleton(new ArrayList<String>());
-
         //PrintWriter pw = new PrintWriter(this.writer);
         pw.println(book.getOwnerName());
         ArrayList<Appointment> arrayList = new ArrayList<>();
