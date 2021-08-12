@@ -5,6 +5,8 @@ import edu.pdx.cs410J.AppointmentBookDumper;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 public class PrettyPrinter implements AppointmentBookDumper {
@@ -27,6 +29,8 @@ public class PrettyPrinter implements AppointmentBookDumper {
     }
 
     public void dumpUsingWriter(AppointmentBook book){
+        Collection<Object> strings = Collections.singleton(new ArrayList<String>());
+
         //PrintWriter pw = new PrintWriter(this.writer);
         pw.println(book.getOwnerName());
         ArrayList<Appointment> arrayList = new ArrayList<>();

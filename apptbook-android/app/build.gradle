@@ -3,12 +3,13 @@ plugins {
 }
 
 android {
-    compileSdk 30
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "edu.pdx.cs410J.huidong"
-        minSdk 29
-        targetSdk 30
+        minSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
